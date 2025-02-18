@@ -1,1 +1,3 @@
-# Data Repositories\n\nFolder ini berisi implementasi konkret untuk akses data (misalnya: IndexedDB, API).
+# Data Repositories
+
+Folder ini berisi implementasi konkret untuk akses data (misalnya: IndexedDB, API).

@@ -1,1 +1,3 @@
-# Styles\n\nFolder ini berisi file CSS/SCSS.
+# Styles
+
+Folder ini berisi file CSS/SCSS.

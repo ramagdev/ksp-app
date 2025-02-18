@@ -1,1 +1,3 @@
-# Pages\n\nFolder ini berisi halaman aplikasi.
+# Pages
+
+Folder ini berisi halaman aplikasi.
