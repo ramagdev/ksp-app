@@ -16,8 +16,8 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/">
           <Route index element={<App />} />
-          <Route path="home" element={<HomePage />} />
-          <Route path="tambah-nasabah" element={<TambahNasabahPage />} />
+          <Route path="#/home" element={<HomePage />} />
+          <Route path="#/tambah-nasabah" element={<TambahNasabahPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
