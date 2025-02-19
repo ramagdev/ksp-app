@@ -12,5 +12,5 @@ export default defineConfig({
     outDir: 'docs', // Folder output build
     emptyOutDir: true, // Bersihkan folder dist sebelum build
   },
-  base: '',
+  base: '/ksp-app/',
 })
