@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   build: {
-    outDir: 'dist', // Folder output build
+    outDir: 'docs', // Folder output build
     emptyOutDir: true, // Bersihkan folder dist sebelum build
   },
   base: './',
