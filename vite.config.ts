@@ -8,4 +8,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    outDir: 'dist', // Folder output build
+    emptyOutDir: true, // Bersihkan folder dist sebelum build
+  },
+  base: './',
 })
