@@ -6,6 +6,7 @@ export interface Nasabah {
   nama: string;
   telepon: string;
   nik: string;
+  alamat: string;
 }
 
 export class NasabahRepository extends Dexie {
@@ -14,7 +15,7 @@ export class NasabahRepository extends Dexie {
   constructor() {
     super("KoperasiDB");
     this.version(1).stores({
-      nasabah: "++id, nama, telepon, nik",
+      nasabah: "++id, nama, telepon, alamat",
     });
     this.nasabah = this.table("nasabah");
 
@@ -22,9 +23,18 @@ export class NasabahRepository extends Dexie {
   }
 
   private async initData() {
-    const count = await this.nasabah.count();
-    if (count === 0) {
-      await this.nasabah.bulkAdd(nasabahList);
+    const storedNasabahList = await this.nasabah.toArray();
+    const storedNasabahMap = new Map(storedNasabahList.map(n => [n.id, n]));
+
+    for (const nasabah of nasabahList) {
+      if (!storedNasabahMap.has(nasabah.id)) {
+        await this.nasabah.add(nasabah);
+      } else {
+        const storedNasabah = storedNasabahMap.get(nasabah.id);
+        if (storedNasabah && JSON.stringify(storedNasabah) !== JSON.stringify(nasabah)) {
+          await this.nasabah.put(nasabah);
+        }
+      }
     }
   }
 }
