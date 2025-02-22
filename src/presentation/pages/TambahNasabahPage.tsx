@@ -39,7 +39,7 @@ export const TambahNasabahPage = () => {
 
   return (
     <div className="flex items-center justify-center bg-gray-100">
-      <div className="max-w-7xl w-full p-6 bg-white shadow-md rounded-lg">
+      <div className="max-w-7xl p-6 bg-white shadow-md rounded-lg my-10">
         <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">Tambah Nasabah</h1>
 
         <form className="flex justify-center flex-wrap gap-7 gap-x-10">
@@ -215,7 +215,7 @@ export const TambahNasabahPage = () => {
             <button
               type="submit"
               onClick={handleSubmit}
-              className="hover:ring-blue-700 text-white px-6 py-2 rounded-lg"
+              className="text-white px-6 py-2 rounded-lg"
             >
               Simpan
             </button>

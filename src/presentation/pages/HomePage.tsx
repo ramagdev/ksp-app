@@ -17,6 +17,7 @@ export default function HomePage() {
     const loadInitialData = async () => {
       try {
         const allData = await nasabahRepo.nasabah.toArray();
+        console.log(allData);
         setAllNasabah(allData);
         setFilteredNasabah(allData);
       } catch (err) {

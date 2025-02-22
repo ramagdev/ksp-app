@@ -37,4 +37,13 @@ export class NasabahRepository extends Dexie {
       }
     }
   }
+
+  // async getNasabahById(id: number): Promise<Nasabah | undefined> {
+  //   const nasabah = this.nasabah.toArray();
+  //   console.log("sampai sini", nasabah);
+  //   return nasabah;
+  // }
+
+
+
 }
