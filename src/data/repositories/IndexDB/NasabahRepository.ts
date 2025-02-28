@@ -1,5 +1,5 @@
 import Dexie from "dexie";
-// import { nasabahList } from "../../../mocks/nasabah";
+import { nasabahList } from "../../../mocks/nasabah";
 
 export interface Nasabah {
   id?: number;
@@ -19,7 +19,7 @@ export class NasabahRepository extends Dexie {
     });
     this.nasabah = this.table("nasabah");
     // this.validateData();
-    // this.initData();
+    this.initData();
 
   }
 
@@ -32,21 +32,21 @@ export class NasabahRepository extends Dexie {
   //   }
   // }
 
-  // private async initData() {
-  //   const storedNasabahList = await this.nasabah.toArray();
-  //   const storedNasabahMap = new Map(storedNasabahList.map(n => [n.id, n]));
+  private async initData() {
+    const storedNasabahList = await this.nasabah.toArray();
+    const storedNasabahMap = new Map(storedNasabahList.map(n => [n.id, n]));
 
-  //   for (const nasabah of nasabahList) {
-  //     if (!storedNasabahMap.has(nasabah.id)) {
-  //       await this.nasabah.add(nasabah);
-  //     } else {
-  //       const storedNasabah = storedNasabahMap.get(nasabah.id);
-  //       if (storedNasabah && JSON.stringify(storedNasabah) !== JSON.stringify(nasabah)) {
-  //         await this.nasabah.put(nasabah);
-  //       }
-  //     }
-  //   }
-  // }
+    for (const nasabah of nasabahList) {
+      if (!storedNasabahMap.has(nasabah.id)) {
+        await this.nasabah.add(nasabah);
+      } else {
+        const storedNasabah = storedNasabahMap.get(nasabah.id);
+        if (storedNasabah && JSON.stringify(storedNasabah) !== JSON.stringify(nasabah)) {
+          await this.nasabah.put(nasabah);
+        }
+      }
+    }
+  }
 
   // async getNasabahById(id: number): Promise<Nasabah | undefined> {
   //   const nasabah = this.nasabah.toArray();
