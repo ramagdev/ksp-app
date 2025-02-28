@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { NasabahRepository } from "../../data/repositories/NasabahRepository";
-// import { NasabahDetailRepository } from "../../data/repositories/NasabahDetailRepository";
-import { Nasabah } from "../../data/repositories/NasabahRepository";
-import { NasabahDetail } from "../../data/repositories/NasabahDetailRepository";
+import { useParams } from "react-router-dom";
+import { Tab } from "@headlessui/react";
+import { NasabahRepository, Nasabah } from "../../data/repositories/IndexDB/NasabahRepository";
+import { NasabahDetailRepository, NasabahDetail } from "../../data/repositories/IndexDB/NasabahDetailRepository";
+import { EditNasabahProfile } from "../../core/usecases/EditNasabahProfile";
+import { ProfilNasabah } from "../components/ProfilNasabah";
+import { HistoryTransaksi } from "../components/HistoryTransaksi";
+import { ModalTambahTransaksi } from "../components/ModalTambahTransaksi"; // Komponen modal baru
 
 const nasabahRepo = new NasabahRepository();
-// const nasabahDetailRepo = new NasabahDetailRepository();
+const nasabahDetailRepo = new NasabahDetailRepository();
+const editProfileUseCase = new EditNasabahProfile(nasabahRepo, nasabahDetailRepo);
 
 export const ProfilNasabahPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,24 +18,24 @@ export const ProfilNasabahPage = () => {
   const [detail, setDetail] = useState<NasabahDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false); // State untuk modal
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const nasabahId = Number(id);
         const nasabahData = await nasabahRepo.nasabah.get(nasabahId);
-        // const detailData = await nasabahDetailRepo.nasabahDetail
-        //   .where("nasabahId")
-        //   .equals(nasabahId)
-        //   .first();
+        const detailData = await nasabahDetailRepo.nasabahDetail
+          .where("nasabahId")
+          .equals(nasabahId)
+          .first();
 
         if (!nasabahData) {
           throw new Error("Data nasabah tidak ditemukan");
         }
 
         setNasabah(nasabahData);
-        setDetail(/* detailData || */ null);
+        setDetail(detailData || null);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Terjadi kesalahan");
       } finally {
@@ -41,6 +45,34 @@ export const ProfilNasabahPage = () => {
 
     loadData();
   }, [id]);
+
+  const handleSave = async (field: string, value: any) => {
+    if (!nasabah) return;
+
+    const { success, error } = await editProfileUseCase.execute(
+      nasabah.id!,
+      field,
+      value
+    );
+
+    if (success) {
+      if (field in nasabah) {
+        setNasabah((prev) => (prev ? { ...prev, [field]: value } : null));
+      } else if (detail && field in detail) {
+        setDetail((prev) => (prev ? { ...prev, [field]: value } : null));
+      }
+    } else {
+      setError(error);
+    }
+  };
+
+  const handleTambahTransaksi = () => {
+    setIsModalOpen(true); // Buka modal
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Tutup modal
+  };
 
   if (isLoading) {
     return (
@@ -56,84 +88,82 @@ export const ProfilNasabahPage = () => {
         <div className="bg-red-50 p-6 rounded-lg border border-red-200 text-red-600 max-w-md text-center">
           <p className="font-semibold">Error:</p>
           <p>{error}</p>
-          <button
-            onClick={() => navigate("/")}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-          >
-            Kembali ke Beranda
-          </button>
         </div>
       </div>
     );
   }
 
   if (!nasabah) {
-    return null;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="bg-red-50 p-6 rounded-lg border border-red-200 text-red-600 max-w-md text-center">
+          <p className="font-semibold">Error:</p>
+          <p>Data nasabah tidak ditemukan</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100">
-      <div className="max-w-7xl p-6 bg-white shadow-md rounded-lg my-10">
-      
-        {/* Header */}
+
+      <div className="w-full md:max-w-7xl mx-auto p-6 bg-white shadow-md rounded-lg my-10">
         <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">Profil Nasabah</h1>
+        <Tab.Group>
+          {/* Tab List */}
+          <Tab.List className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+            <Tab
+              className={({ selected }) =>
+                `w-full py-2.5 text-sm font-medium rounded-lg ${
+                  selected
+                    ? "bg-white shadow text-blue-600"
+                    : "text-gray-600 hover:bg-gray-200"
+                }`
+              }
+            >
+              Informasi Profil
+            </Tab>
+            <Tab
+              className={({ selected }) =>
+                `w-full py-2.5 text-sm font-medium rounded-lg ${
+                  selected
+                    ? "bg-white shadow text-blue-600"
+                    : "text-gray-600 hover:bg-gray-200"
+                }`
+              }
+            >
+              History Transaksi
+            </Tab>
+          </Tab.List>
 
-        {/* Body */}
-        <div className="p-6 m-5 mt-0">
-          {/* Informasi Utama */}
-          <div className=" grid grid-cols-1 md:grid-cols-3 gap-7 gap-x-5">
-            <div className="col-span-1 md:col-span-2 p-3 pt-0 ">
-              <h2 className="text-2xl font-semibold text-gray-700 mb-4">Informasi Pribadi</h2>
-              <div className="space-y-4">
-                <InfoItem label="Nama" value={nasabah.nama} />
-                <InfoItem label="Telepon" value={nasabah.telepon} />
-                <InfoItem label="NIK" value={nasabah.nik} />
-                <InfoItem label="Alamat" value={nasabah.alamat} />
+          {/* Tab Panels */}
+          <Tab.Panels className="mt-4">
+            <Tab.Panel className="bg-white p-4 rounded-lg shadow">
+              <ProfilNasabah nasabah={nasabah} detail={detail} onSave={handleSave} />
+            </Tab.Panel>
+            <Tab.Panel className="bg-white p-4 rounded-lg shadow">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">History Transaksi</h2>
+                <button
+                  onClick={handleTambahTransaksi}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  + Tambah Transaksi
+                </button>
               </div>
-            </div>
+              <HistoryTransaksi nasabahId={nasabah.id!} />
+            </Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
 
-            {/* Foto */}
-            <div className="flex justify-center col-span-1">
-              <div className="w-48 h-48 bg-gray-200 rounded-lg overflow-hidden">
-                {detail?.foto ? (
-                  <img
-                    src={URL.createObjectURL(detail.foto)}
-                    alt="Foto Nasabah"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-500">
-                    Tidak ada foto
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Informasi Detail */}
-          {detail && (
-            <>
-              <h2 className="text-2xl font-semibold text-gray-700 mb-4">Detail Profil</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <InfoItem label="Tanggal Lahir" value={detail.tanggalLahir.toLocaleDateString()} />
-                <InfoItem label="Pekerjaan/Usaha" value={detail.pekerjaanUsaha} />
-                <InfoItem label="Status Perkawinan" value={detail.statusPerkawinan} />
-                <InfoItem label="Nama Pasangan" value={detail.namaPasangan} />
-                <InfoItem label="Nama Penjamin" value={detail.penjamin.nama} />
-                <InfoItem label="Hubungan Penjamin" value={detail.penjamin.hubungan} />
-              </div>
-            </>
-          )}
-        </div>
+        {/* Modal Tambah Transaksi */}
+        {isModalOpen && (
+          <ModalTambahTransaksi
+            nasabahId={nasabah.id!}
+            namaNasabah={nasabah.nama}
+            onClose={handleCloseModal}
+          />
+        )}
       </div>
-    </div>
+
   );
 };
-
-// Komponen kecil untuk menampilkan info
-const InfoItem = ({ label, value }: { label: string; value: string | null }) => (
-  <div>
-    <p className="text-sm text-gray-600">{label}</p>
-    <p className="font-medium text-gray-800">{value || "-"}</p>
-  </div>
-);

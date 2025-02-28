@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Nasabah, NasabahRepository } from "../../data/repositories/NasabahRepository";
+import { Nasabah, NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
 
 
 const nasabahRepo = new NasabahRepository();

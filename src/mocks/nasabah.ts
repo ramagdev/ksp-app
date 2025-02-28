@@ -76,5 +76,5 @@ export const nasabahList: Nasabah[] = [
     telepon: "081234567899", 
     nik: "1234567890123465",
     alamat: "Jl. Panglima Sudirman No. 11, Malang" 
-  },
+  }
 ];

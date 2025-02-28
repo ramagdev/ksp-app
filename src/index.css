@@ -1,5 +1,4 @@
-@import "tailwindcss";
-:root {
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -32,9 +31,9 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-}
+} */
 
-button {
+/* button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -46,16 +45,17 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
+ button:hover {
   border-color: grey;
   background-color: #111827;
   color: white;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
-
+} */
+/* 
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -64,4 +64,111 @@ button:focus-visible {
   a:hover {
     color: #747bff;
   }
+} */
+
+@import "tailwindcss";
+@import './styles/profilnasabah.css';
+
+
+/* Reset dan Base Style */
+html {
+  font-family: "Poppins", sans-serif; /* Font modern dan profesional */
+  scroll-behavior: smooth; /* Scroll halus untuk navigasi */
+}
+
+body {
+  background-color: #f9fafb; /* Tailwind bg-gray-50 */
+  color: #111827; /* Tailwind text-gray-900 */
+  -webkit-font-smoothing: antialiased; /* Rendering font lebih halus */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700; /* Tailwind font-bold */
+  /* color: #1f2937; Tailwind text-gray-800 */
+}
+
+/* Komponen Kustom */
+.btn-primary {
+  padding: 0.5rem 1rem; /* Tailwind px-4 py-2 */
+  background-color: #2563eb; /* Tailwind bg-blue-600 */
+  color: #ffffff; /* Tailwind text-white */
+  border-radius: 0.375rem; /* Tailwind rounded-md */
+  transition: background-color 0.2s ease-in-out; /* Tailwind transition */
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8; /* Tailwind hover:bg-blue-700 */
+}
+
+.btn-primary:focus {
+  outline: none; /* Tailwind focus:outline-none */
+  box-shadow: 0 0 0 2px #3b82f6, 0 0 0 4px rgba(59, 130, 246, 0.1); /* Replikasi focus:ring-2 dan ring-offset-2 */
+}
+
+.btn-secondary {
+  padding: 0.5rem 1rem; /* Tailwind px-4 py-2 */
+  background-color: #e5e7eb; /* Tailwind bg-gray-200 */
+  color: #374151; /* Tailwind text-gray-700 */
+  border-radius: 0.375rem; /* Tailwind rounded-md */
+  transition: background-color 0.2s ease-in-out; /* Tailwind transition */
+}
+
+.btn-secondary:hover {
+  background-color: #d1d5db; /* Tailwind hover:bg-gray-300 */
+}
+
+.btn-secondary:focus {
+  outline: none; /* Tailwind focus:outline-none */
+  box-shadow: 0 0 0 2px #9ca3af, 0 0 0 4px rgba(156, 163, 175, 0.1); /* Replikasi focus:ring-2 dan ring-offset-2 */
+}
+
+.card {
+  background-color: #ffffff; /* Tailwind bg-white */
+  border-radius: 0.75rem; /* Tailwind rounded-xl */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Tailwind shadow-sm */
+  padding: 1.5rem; /* Tailwind p-6 */
+  border: 1px solid #f3f4f6; /* Tailwind border border-gray-100 */
+}
+
+.input {
+  padding: 0.5rem 1rem; /* Tailwind px-4 py-2 */
+  border: 1px solid #e5e7eb; /* Tailwind border-gray-200 */
+  border-radius: 0.375rem; /* Tailwind rounded-lg */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Tailwind shadow-sm */
+  transition: all 0.2s ease-in-out; /* Tailwind transition-all */
+}
+
+.input:focus {
+  outline: none; /* Tailwind focus:outline-none */
+  box-shadow: 0 0 0 2px #3b82f6; /* Replikasi focus:ring-2 */
+  border-color: transparent; /* Tailwind focus:border-transparent */
+}
+
+/* Utilitas Tambahan */
+.text-gradient {
+  background: linear-gradient(90deg, #3b82f6, #9333ea);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.shadow-glow {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05), 0 0 10px rgba(59, 130, 246, 0.1);
+}
+
+/* Animasi untuk masuk dan keluar halaman */
+.page-enter {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 1000ms, transform 1000ms;
 }

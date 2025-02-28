@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { NasabahRepository } from "../../data/repositories/NasabahRepository";
-import { NasabahDetailRepository } from "../../data/repositories/NasabahDetailRepository";
+import { NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
+import { NasabahDetailRepository } from "../../data/repositories/IndexDB/NasabahDetailRepository";
 import { useNavigate } from "react-router-dom";
 
 const nasabahRepo = new NasabahRepository();
@@ -18,31 +18,55 @@ export const TambahNasabahPage = () => {
   const [namaPenjamin, setNamaPenjamin] = useState("");
   const [hubunganPenjamin, setHubunganPenjamin] = useState<"anak" | "orang_tua" | "saudara">("saudara");
   const [foto, setFoto] = useState<File | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
 
-  const handleSubmit = async () => {
-    const nasabahId = await nasabahRepo.nasabah.add({ nama, telepon, nik, alamat });
-    await nasabahDetailRepo.nasabahDetail.add({
-      nasabahId, 
-      tanggalLahir, 
-      pekerjaanUsaha, 
-      statusPerkawinan, 
-      namaPasangan,
-      penjamin: {
-        nama: namaPenjamin,
-        hubungan: hubunganPenjamin
-      }, 
-      foto
-    });
-    navigate("/");
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!nama.trim()) newErrors.nama = "Nama harus diisi.";
+    if (!telepon.trim()) newErrors.telepon = "Telepon harus diisi.";
+    if (!nik.trim()) newErrors.nik = "NIK harus diisi.";
+    if (!alamat.trim()) newErrors.alamat = "Alamat harus diisi.";
+
+    return newErrors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    try {
+      const nasabahId = await nasabahRepo.nasabah.add({ nama, telepon, nik, alamat });
+      await nasabahDetailRepo.nasabahDetail.add({
+        nasabahId,
+        tanggalLahir,
+        pekerjaanUsaha,
+        statusPerkawinan,
+        namaPasangan,
+        penjamin: {
+          nama: namaPenjamin,
+          hubungan: hubunganPenjamin,
+        },
+        foto,
+      });
+      navigate("/home");
+    } catch (err) {
+      setErrors({ general: "Gagal menambahkan nasabah. Silakan coba lagi." });
+    }
   };
 
   return (
-    <div className="flex items-center justify-center bg-gray-100">
+    <div className="flex items-center justify-center">
       <div className="max-w-7xl p-6 bg-white shadow-md rounded-lg my-10">
         <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">Tambah Nasabah</h1>
 
-        <form className="flex justify-center flex-wrap gap-7 gap-x-10">
+        <form onSubmit={handleSubmit} className="flex justify-center flex-wrap gap-7 gap-x-10">
           <div className="w-full md:w-1/3">
             <label htmlFor="nama" className="block text-sm font-medium text-gray-700">
               Nama
@@ -54,7 +78,9 @@ export const TambahNasabahPage = () => {
               onChange={(e) => setNama(e.target.value)}
               placeholder="Nama"
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
+            {errors.nama && <p className="text-red-500 text-sm mt-1">{errors.nama}</p>}
           </div>
           <div className="w-full md:w-1/3">
             <label htmlFor="telepon" className="block text-sm font-medium text-gray-700">
@@ -64,10 +90,19 @@ export const TambahNasabahPage = () => {
               type="text"
               id="telepon"
               value={telepon}
-              onChange={(e) => setTelepon(e.target.value)}
-              placeholder="Telepon"
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D+/g, "");
+                const result = [];
+                for (let i = 0; i < value.length; i += 4) {
+                  result.push(value.substring(i, i + 4));
+                }
+                setTelepon(result.join("-"));
+              }}
+              placeholder="08xx-xxxx-xxxx"
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
+            {errors.telepon && <p className="text-red-500 text-sm mt-1">{errors.telepon}</p>}
           </div>
           <div className="w-full md:w-1/3">
             <label htmlFor="nik" className="block text-sm font-medium text-gray-700">
@@ -77,10 +112,13 @@ export const TambahNasabahPage = () => {
               type="text"
               id="nik"
               value={nik}
-              onChange={(e) => setNik(e.target.value)}
+              onChange={(e) => setNik(e.target.value.replace(/\D+/g, ""))}
               placeholder="NIK"
+              pattern="[0-9]{16}"
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
+            {errors.nik && <p className="text-red-500 text-sm mt-1">{errors.nik || "NIK harus 16 digit angka"}</p>}
           </div>
           <div className="w-full md:w-1/3">
             <label htmlFor="alamat" className="block text-sm font-medium text-gray-700">
@@ -93,8 +131,11 @@ export const TambahNasabahPage = () => {
               onChange={(e) => setAlamat(e.target.value)}
               placeholder="Alamat"
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
+            {errors.alamat && <p className="text-red-500 text-sm mt-1">{errors.alamat}</p>}
           </div>
+          {/* Field lainnya */}
           <div className="w-full md:w-1/3">
             <label htmlFor="tanggalLahir" className="block text-sm font-medium text-gray-700">
               Tanggal Lahir
@@ -187,8 +228,20 @@ export const TambahNasabahPage = () => {
                 htmlFor="foto"
                 className="w-60 h-80 flex flex-col justify-center items-center p-4 text-gray-500 border-2 border-dashed rounded-lg cursor-pointer"
               >
-                <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                <svg
+                  className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 16"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round" // Diubah ke camelCase
+                    strokeLinejoin="round" // Diubah ke camelCase
+                    strokeWidth="2" // Diubah ke camelCase
+                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                  />
                 </svg>
                 <p className="mb-2 text-m">Upload file photo</p>
                 <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -214,14 +267,14 @@ export const TambahNasabahPage = () => {
           <div className="w-full flex justify-center mt-4">
             <button
               type="submit"
-              onClick={handleSubmit}
-              className="text-white px-6 py-2 rounded-lg"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
             >
               Simpan
             </button>
           </div>
+          {errors.general && <p className="text-red-500 text-sm mt-2 text-center">{errors.general}</p>}
         </form>
-       </div>
+      </div>
     </div>
   );
 };
