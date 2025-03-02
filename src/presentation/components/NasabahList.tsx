@@ -1,4 +1,4 @@
-import { Nasabah } from "../../data/repositories/IndexDB/NasabahRepository";
+import { Nasabah } from "../../core/entities/Nasabah";
 import { useNavigate } from "react-router-dom"; // Tambahkan useNavigate
 import { PlusIcon } from "@heroicons/react/24/outline"; // Tambahkan PlusIcon
 import { useState } from "react";
@@ -56,7 +56,7 @@ export default function NasabahList({ nasabahList, isLoading, error }: NasabahLi
           <thead className="bg-gray-100">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                ID
+                NO.KTA
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Nama
@@ -69,6 +69,9 @@ export default function NasabahList({ nasabahList, isLoading, error }: NasabahLi
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Alamat
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Marketing
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Transaksi
@@ -89,19 +92,22 @@ export default function NasabahList({ nasabahList, isLoading, error }: NasabahLi
                   className="hover:bg-blue-50 transition-colors cursor-pointer group"
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {nasabah.id}
+                    {nasabah.noKta}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
                     {nasabah.nama}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {nasabah.telepon}
+                    {nasabah.telepon.replace(/(\d{4})/g, "$1-").replace(/-$/, "")}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {nasabah.nik}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
                     {nasabah.alamat}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {nasabah.kodeMarketing}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button

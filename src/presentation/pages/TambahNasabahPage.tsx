@@ -7,16 +7,19 @@ const nasabahRepo = new NasabahRepository();
 const nasabahDetailRepo = new NasabahDetailRepository();
 
 export const TambahNasabahPage = () => {
+  const [noKta, setNoKta] = useState("");
   const [nama, setNama] = useState("");
   const [telepon, setTelepon] = useState("");
   const [nik, setNik] = useState("");
   const [alamat, setAlamat] = useState("");
+  const [kodeMarketing, setKodeMarketing] = useState("");
   const [tanggalLahir, setTanggalLahir] = useState<Date>(new Date());
   const [pekerjaanUsaha, setPekerjaan] = useState("");
-  const [statusPerkawinan, setStatusPerkawinan] = useState<"belum_menikah" | "menikah" | "duda" | "janda">("belum_menikah");
+  const [statusPerkawinan, setStatusPerkawinan] = useState<"Belum Menikah" | "Menikah" | "Duda" | "Janda">("Belum Menikah");
   const [namaPasangan, setNamaPasangan] = useState("");
   const [namaPenjamin, setNamaPenjamin] = useState("");
-  const [hubunganPenjamin, setHubunganPenjamin] = useState<"anak" | "orang_tua" | "saudara">("saudara");
+  const [hubunganPenjamin, setHubunganPenjamin] = useState<"Anak" | "Orang Tua" | "Saudara">("Saudara");
+  const [teleponPenjamin, setTeleponPenjamin] = useState("");
   const [foto, setFoto] = useState<File | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
@@ -42,17 +45,18 @@ export const TambahNasabahPage = () => {
     }
 
     try {
-      const nasabahId = await nasabahRepo.nasabah.add({ nama, telepon, nik, alamat });
+      const nasabahId = await nasabahRepo.nasabah.add({ noKta, nama, 
+        telepon: telepon.replace(/[^0-9]/g, ""),
+        nik, alamat, kodeMarketing });
       await nasabahDetailRepo.nasabahDetail.add({
         nasabahId,
         tanggalLahir,
         pekerjaanUsaha,
         statusPerkawinan,
         namaPasangan,
-        penjamin: {
-          nama: namaPenjamin,
-          hubungan: hubunganPenjamin,
-        },
+        namaPenjamin,
+        hubunganPenjamin,
+        teleponPenjamin: teleponPenjamin.replace(/[^0-9]/g, ""),
         foto,
       });
       navigate("/home");
@@ -67,6 +71,21 @@ export const TambahNasabahPage = () => {
         <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">Tambah Nasabah</h1>
 
         <form onSubmit={handleSubmit} className="flex justify-center flex-wrap gap-7 gap-x-10">
+          <div className="w-full md:w-1/3">
+            <label htmlFor="noKta" className="block text-sm font-medium text-gray-700">
+              No KTA
+            </label>
+            <input
+              type="text"
+              id="noKta"
+              value={noKta}
+              onChange={(e) => setNoKta(e.target.value)}
+              placeholder="No KTA"
+              className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            {errors.noKta && <p className="text-red-500 text-sm mt-1">{errors.noKta}</p>}
+          </div>
           <div className="w-full md:w-1/3">
             <label htmlFor="nama" className="block text-sm font-medium text-gray-700">
               Nama
@@ -89,7 +108,7 @@ export const TambahNasabahPage = () => {
             <input
               type="text"
               id="telepon"
-              value={telepon}
+              value={telepon} 
               onChange={(e) => {
                 const value = e.target.value.replace(/\D+/g, "");
                 const result = [];
@@ -135,6 +154,21 @@ export const TambahNasabahPage = () => {
             />
             {errors.alamat && <p className="text-red-500 text-sm mt-1">{errors.alamat}</p>}
           </div>
+          <div className="w-full md:w-1/3">
+            <label htmlFor="kodeMarketingarketing" className="block text-sm font-medium text-gray-700">
+              Kode Marketing
+            </label>
+            <input
+              type="text"
+              id="kodeMarketingarketing"
+              value={kodeMarketing}
+              onChange={(e) => setKodeMarketing(e.target.value)}
+              placeholder="Kode Marketing"
+              className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            {errors.kodeMarketing && <p className="text-red-500 text-sm mt-1">{errors.kodeMarketing}</p>}
+          </div>
           {/* Field lainnya */}
           <div className="w-full md:w-1/3">
             <label htmlFor="tanggalLahir" className="block text-sm font-medium text-gray-700">
@@ -169,13 +203,13 @@ export const TambahNasabahPage = () => {
             <select
               id="statusPerkawinan"
               value={statusPerkawinan}
-              onChange={(e) => setStatusPerkawinan(e.target.value as 'belum_menikah' | 'menikah' | 'duda' | 'janda')}
+              onChange={(e) => setStatusPerkawinan(e.target.value as 'Belum Menikah' | 'Menikah' | 'Duda' | 'Janda')}
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="belum_menikah">Belum Menikah</option>
-              <option value="menikah">Menikah</option>
-              <option value="duda">Duda</option>
-              <option value="janda">Janda</option>
+              <option value="Belum Menikah">Belum Menikah</option>
+              <option value="Menikah">Menikah</option>
+              <option value="Duda">Duda</option>
+              <option value="Janda">Janda</option>
             </select>
           </div>
           <div className="w-full md:w-1/3">
@@ -211,13 +245,33 @@ export const TambahNasabahPage = () => {
             <select
               id="hubunganPenjamin"
               value={hubunganPenjamin}
-              onChange={(e) => setHubunganPenjamin(e.target.value as 'anak' | 'orang_tua' | 'saudara')}
+              onChange={(e) => setHubunganPenjamin(e.target.value as 'Anak' | 'Orang Tua' | 'Saudara')}
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="anak">Anak</option>
-              <option value="orang_tua">Orang Tua</option>
-              <option value="saudara">Saudara</option>
+              <option value="Anak">Anak</option>
+              <option value="Orang Tua">Orang Tua</option>
+              <option value="Saudara">Saudara</option>
             </select>
+          </div>
+          <div className="w-full md:w-1/3">
+            <label htmlFor="teleponPenjamin" className="block text-sm font-medium text-gray-700">
+              Telepon Penjamin
+            </label>
+            <input
+              type="text"
+              id="teleponPenjamin"
+              value={teleponPenjamin}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D+/g, "");
+                const result = [];
+                for (let i = 0; i < value.length; i += 4) {
+                  result.push(value.substring(i, i + 4));
+                }
+                setTeleponPenjamin(result.join("-"));
+              }}
+              placeholder="08xx-xxxx-xxxx"
+              className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
           <div className="w-full md:w-1/3">
             <label htmlFor="foto" className="px-11 block text-sm font-medium text-gray-700">

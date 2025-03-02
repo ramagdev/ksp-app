@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Tab } from "@headlessui/react";
-import { NasabahRepository, Nasabah } from "../../data/repositories/IndexDB/NasabahRepository";
-import { NasabahDetailRepository, NasabahDetail } from "../../data/repositories/IndexDB/NasabahDetailRepository";
+import { Nasabah} from "../../core/entities/Nasabah";
+import { NasabahDetail } from "../../core/entities/NasabahDetail";
+import { NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
+import { NasabahDetailRepository } from "../../data/repositories/IndexDB/NasabahDetailRepository";
 import { EditNasabahProfile } from "../../core/usecases/EditNasabahProfile";
 import { ProfilNasabah } from "../components/ProfilNasabah";
 import { HistoryTransaksi } from "../components/HistoryTransaksi";
@@ -35,7 +37,19 @@ export const ProfilNasabahPage = () => {
         }
 
         setNasabah(nasabahData);
-        setDetail(detailData || null);
+        setDetail(
+          detailData || {
+            nasabahId: nasabahId,
+            tanggalLahir: new Date(),
+            pekerjaanUsaha: "",
+            statusPerkawinan: "Belum Menikah",
+            namaPasangan: "",
+            namaPenjamin: "",
+            hubunganPenjamin: "Anak",
+            teleponPenjamin: "",
+            foto: null
+          }
+        );
       } catch (err) {
         setError(err instanceof Error ? err.message : "Terjadi kesalahan");
       } finally {
@@ -48,19 +62,24 @@ export const ProfilNasabahPage = () => {
 
   const handleSave = async (field: string, value: any) => {
     if (!nasabah) return;
-
+  
     const { success, error } = await editProfileUseCase.execute(
       nasabah.id!,
       field,
       value
     );
-
+  
     if (success) {
-      if (field in nasabah) {
-        setNasabah((prev) => (prev ? { ...prev, [field]: value } : null));
-      } else if (detail && field in detail) {
-        setDetail((prev) => (prev ? { ...prev, [field]: value } : null));
-      }
+      // Ambil ulang data nasabah dan detail dari IndexedDB
+      const updatedNasabah = await nasabahRepo.nasabah.get(nasabah.id!);
+      const updatedDetail = await nasabahDetailRepo.nasabahDetail
+        .where("nasabahId")
+        .equals(nasabah.id!)
+        .first();
+  
+      // Perbarui state
+      setNasabah(updatedNasabah || null);
+      setDetail(updatedDetail || null);
     } else {
       setError(error);
     }

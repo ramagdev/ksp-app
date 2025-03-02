@@ -1,21 +1,18 @@
 import { useState } from "react";
 import { PencilIcon, CheckIcon, XMarkIcon as XIcon } from "@heroicons/react/24/outline";
 
-interface EditableFieldProps {
+interface TeleponEditableFieldProps {
   label: string;
   value: any;
-  type?: "text" | "date" | "select";
   options?: Array<{ value: string; label: string }>;
   onSave: (value: any) => void;
 }
 
-export const EditableField = ({
+export const TeleponEditableField = ({
   label,
   value,
-  type = "text",
-  options,
   onSave,
-}: EditableFieldProps) => {
+}: TeleponEditableFieldProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(value);
 
@@ -45,38 +42,14 @@ export const EditableField = ({
 
       {isEditing ? (
         <div className="flex gap-2 mt-1">
-          {type === "select" && options ? (
-            <select
-              value={tempValue}
-              onChange={(e) => setTempValue(e.target.value)}
-              className="flex-1 p-1 border rounded"
-            >
-              {options.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          ) : (
             <input
-              type={type}
-              value={
-                type === "date"
-                  ? !tempValue
-                    ?new Date().toISOString().split("T")[0] 
-                    : tempValue instanceof Date //Check that tempValue is a Date object
-                      ? tempValue.toISOString().split("T")[0]
-                      : new Date(tempValue).toISOString().split("T")[0] // Convert tempValue to Date
-                  :tempValue
-              }
+              type="text"
+              value={tempValue}
               onChange={(e) =>
-                setTempValue(
-                  type === "date" ? new Date(e.target.value) : e.target.value
-                )
+                setTempValue(e.target.value)
               }
               className="flex-1 p-1 border rounded"
             />
-          )}
           <div className="flex gap-1">
             <button
               onClick={handleSave}
@@ -94,7 +67,7 @@ export const EditableField = ({
         </div>
       ) : (
         <p className="font-medium text-gray-800 break-words">
-          {type === "date" ? new Date(value).toLocaleDateString("en-GB") : value || "-"}
+          {value || "-"}
         </p>
       )}
     </div>

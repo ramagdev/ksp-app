@@ -1,13 +1,6 @@
 import Dexie from "dexie";
+import { Nasabah } from "../../../core/entities/Nasabah";
 import { nasabahList } from "../../../mocks/nasabah";
-
-export interface Nasabah {
-  id?: number;
-  nama: string;
-  telepon: string;
-  nik: string;
-  alamat: string;
-}
 
 export class NasabahRepository extends Dexie {
   nasabah: Dexie.Table<Nasabah, number>;

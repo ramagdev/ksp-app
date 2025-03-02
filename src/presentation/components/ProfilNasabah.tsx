@@ -1,7 +1,7 @@
 // presentation/components/ProfilNasabah.tsx
 import React from "react";
-import { Nasabah } from "../../data/repositories/IndexDB/NasabahRepository";
-import { NasabahDetail } from "../../data/repositories/IndexDB/NasabahDetailRepository";
+import { Nasabah } from "../../core/entities/Nasabah";
+import { NasabahDetail } from "../../core/entities/NasabahDetail";
 import { EditableField } from "../components/EditableField";
 
 interface ProfilNasabahProps {
@@ -18,6 +18,11 @@ export const ProfilNasabah: React.FC<ProfilNasabahProps> = ({ nasabah, detail, o
         <div className="col-span-1 md:col-span-2 p-3 pt-0">
           <h2 className="text-2xl font-semibold text-gray-700 mb-4">Informasi Pribadi</h2>
           <div className="space-y-4">
+          <EditableField
+              label="No.KTA"
+              value={nasabah.noKta}
+              onSave={(value) => onSave("naoKta", value)}
+            />
             <EditableField
               label="Nama"
               value={nasabah.nama}
@@ -37,6 +42,11 @@ export const ProfilNasabah: React.FC<ProfilNasabahProps> = ({ nasabah, detail, o
               label="Alamat"
               value={nasabah.alamat}
               onSave={(value) => onSave("alamat", value)}
+            />
+            <EditableField
+              label="Kode Marketing"
+              value={nasabah.kodeMarketing}
+              onSave={(value) => onSave("kodeMarketing", value)}
             />
           </div>
         </div>
@@ -64,7 +74,7 @@ export const ProfilNasabah: React.FC<ProfilNasabahProps> = ({ nasabah, detail, o
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-3">
         <EditableField
           label="Tanggal Lahir"
-          value={detail?.tanggalLahir ? detail.tanggalLahir.toISOString().split("T")[0] : ""}
+          value={detail?.tanggalLahir ? detail.tanggalLahir: ""}
           type="date"
           onSave={(value) => onSave("tanggalLahir", value)}
         />
@@ -92,19 +102,24 @@ export const ProfilNasabah: React.FC<ProfilNasabahProps> = ({ nasabah, detail, o
         />
         <EditableField
           label="Nama Penjamin"
-          value={detail?.penjamin?.nama || ""}
-          onSave={(value) => onSave("penjamin", { nama: value })}
+          value={detail?.namaPenjamin || ""}
+          onSave={(value) => onSave("namaPenjamin", value)}
         />
         <EditableField
           label="Hubungan Penjamin"
-          value={detail?.penjamin?.hubungan || ""}
+          value={detail?.hubunganPenjamin || ""}
           type="select"
           options={[
             { value: "Anak", label: "Anak" },
             { value: "Orang Tua", label: "Orang Tua" },
             { value: "Saudara", label: "Saudara" },
           ]}
-          onSave={(value) => onSave("penjamin", { hubungan: value })}
+          onSave={(value) => onSave("hubunganPenjamin", value)}
+        />
+        <EditableField
+          label="Telepon Penjamin"
+          value={detail?.teleponPenjamin || ""}
+          onSave={(value) => onSave("teleponPenjamin", value)}
         />
       </div>
     </div>
