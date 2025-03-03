@@ -17,6 +17,7 @@ export default defineConfig({
           react: ['react', 'react-dom', 'react-router-dom', 'react-router','react-transition-group'],
           vendor: ['dexie', 'lodash', '@tanstack/react-table','@tanstack/react-query'],
           recharts: ['recharts'],
+          xlsx: ['xlsx'],
         },
       },
     },

@@ -1,5 +1,5 @@
-import { NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
-import { NasabahDetailRepository } from "../../data/repositories/IndexDB/NasabahDetailRepository";
+import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
+import { NasabahDetailIndexedDBRepository as NasabahDetailRepository } from "../../data/repositories/IndexDB/NasabahDetailRepository";
 import { NasabahDetail } from "../../core/entities/NasabahDetail";
 
 export class EditNasabahProfile {

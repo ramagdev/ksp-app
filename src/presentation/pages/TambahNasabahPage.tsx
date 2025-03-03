@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
-import { NasabahDetailRepository } from "../../data/repositories/IndexDB/NasabahDetailRepository";
+import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
+import { NasabahDetailIndexedDBRepository as NasabahDetailRepository } from "../../data/repositories/IndexDB/NasabahDetailRepository";
 import { useNavigate } from "react-router-dom";
 
 const nasabahRepo = new NasabahRepository();

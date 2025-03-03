@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Nasabah } from "../../core/entities/Nasabah";
-import { NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
+import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
 import NasabahList from "../components/NasabahList";
 import { useDebounce } from "use-debounce";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"; // Ikon pencarian

@@ -1,8 +1,9 @@
 import Dexie from "dexie";
 import { NasabahDetail } from "../../../core/entities/NasabahDetail";
+import { NasabahDetailRepository } from "../../../core/repositories/NasabahDetailRepository";
 import { nasabahDetailList } from "../../../mocks/nasabahdetail";
 
-export class NasabahDetailRepository extends Dexie {
+export class NasabahDetailIndexedDBRepository extends Dexie implements NasabahDetailRepository {
   nasabahDetail: Dexie.Table<NasabahDetail, number>;
 
   constructor() {
@@ -13,6 +14,10 @@ export class NasabahDetailRepository extends Dexie {
     });
     this.nasabahDetail = this.table("nasabahDetail");
     this.initData();
+  }
+
+  async getAll(): Promise<NasabahDetail[]> {
+    return this.nasabahDetail.toArray();
   }
 
   private async initData() {

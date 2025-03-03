@@ -1,11 +1,11 @@
-// presentation/components/AppShell.tsx
 import React, { useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import BackupMultipleTablesButton from "./BackupMultipleTablesButton";
 
 export const AppShell: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Untuk dropdown mobile
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Untuk sidebar desktop
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Untuk sidebar desktop
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -91,6 +91,12 @@ export const AppShell: React.FC = () => {
                   <span className="ml-3">Tambah Nasabah</span>
                 </NavLink>
               </li>
+              <li>
+                <BackupMultipleTablesButton
+                  isSidebarOpen={isSidebarOpen}
+                  isMenuOpen={isMenuOpen}
+                />
+              </li>
             </ul>
           </nav>
         </div>
@@ -167,6 +173,12 @@ export const AppShell: React.FC = () => {
                   </svg>
                   {isSidebarOpen && <span className="ml-3">Tambah Nasabah</span>}
                 </NavLink>
+              </li>
+              <li>
+                <BackupMultipleTablesButton
+                  isSidebarOpen={isSidebarOpen}
+                  isMenuOpen={isMenuOpen}
+                 />
               </li>
             </ul>
           </nav>

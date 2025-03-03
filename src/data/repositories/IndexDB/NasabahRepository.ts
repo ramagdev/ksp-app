@@ -1,8 +1,9 @@
 import Dexie from "dexie";
 import { Nasabah } from "../../../core/entities/Nasabah";
+import { NasabahRepository } from "../../../core/repositories/NasabahRepository";
 import { nasabahList } from "../../../mocks/nasabah";
 
-export class NasabahRepository extends Dexie {
+export class NasabahIndexedDBRepository extends Dexie implements NasabahRepository {
   nasabah: Dexie.Table<Nasabah, number>;
 
   constructor() {
@@ -14,6 +15,10 @@ export class NasabahRepository extends Dexie {
     // this.validateData();
     this.initData();
 
+  }
+
+  async getAll(): Promise<Nasabah[]> {
+    return await this.nasabah.toArray();
   }
 
   // private async validateData() {
