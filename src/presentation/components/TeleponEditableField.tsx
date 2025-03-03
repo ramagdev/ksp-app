@@ -17,7 +17,7 @@ export const TeleponEditableField = ({
   const [tempValue, setTempValue] = useState(value);
 
   const handleSave = () => {
-    onSave(tempValue);
+    onSave(tempValue.replace(/-/g, ""));
     setIsEditing(false);
   };
 
@@ -45,9 +45,14 @@ export const TeleponEditableField = ({
             <input
               type="text"
               value={tempValue}
-              onChange={(e) =>
-                setTempValue(e.target.value)
-              }
+              onChange={(e) =>{
+                  const value = e.target.value.replace(/\D+/g, "");
+                  const result = [];
+                  for (let i = 0; i < value.length; i += 4) {
+                    result.push(value.substring(i, i + 4));
+                  }
+                  setTempValue(result.join("-"));
+              }}
               className="flex-1 p-1 border rounded"
             />
           <div className="flex gap-1">
@@ -67,7 +72,7 @@ export const TeleponEditableField = ({
         </div>
       ) : (
         <p className="font-medium text-gray-800 break-words">
-          {value || "-"}
+          {value ? value.replace(/(.{4})/g, "$1-").replace(/-$/, "") : "-"}
         </p>
       )}
     </div>
