@@ -1,4 +1,4 @@
-import * as XLSX from "xlsx";
+import { write, utils } from 'xlsx';
 
 export class BackupMultipleTablesToExcel {
   constructor(private repositories: { [key: string]: any }) {}
@@ -17,21 +17,21 @@ export class BackupMultipleTablesToExcel {
 
   private convertToExcel(data: any[], tableName: string): Blob {
     // Buat worksheet dari data
-    const worksheet = XLSX.utils.json_to_sheet(data);
+    const worksheet = utils.json_to_sheet(data);
 
     // Buat workbook dan tambahkan worksheet
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, tableName);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, tableName);
 
     // Generate file Excel dalam bentuk binary string
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
+    const excelBuffer = write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
     });
 
     // Konversi binary string ke Blob
     const blob = new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
 
     return blob;
