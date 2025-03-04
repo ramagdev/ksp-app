@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
 import { NasabahDetailIndexedDBRepository as NasabahDetailRepository } from "../../data/repositories/IndexDB/NasabahDetailRepository";
 import { useNavigate } from "react-router-dom";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 const nasabahRepo = new NasabahRepository();
 const nasabahDetailRepo = new NasabahDetailRepository();
@@ -26,11 +27,12 @@ export const TambahNasabahPage = () => {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
+    if (!noKta.trim()) newErrors.noKta = "No KTA harus diisi.";
     if (!nama.trim()) newErrors.nama = "Nama harus diisi.";
     if (!telepon.trim()) newErrors.telepon = "Telepon harus diisi.";
     if (!nik.trim()) newErrors.nik = "NIK harus diisi.";
     if (!alamat.trim()) newErrors.alamat = "Alamat harus diisi.";
+    if (!kodeMarketing.trim()) newErrors.kodeMarketing = "Kode Marketing harus diisi.";
 
     return newErrors;
   };
@@ -70,23 +72,9 @@ export const TambahNasabahPage = () => {
       <div className="max-w-7xl p-6 bg-white shadow-md rounded-lg my-10">
         <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">Tambah Nasabah</h1>
 
-        <form onSubmit={handleSubmit} className="flex justify-center flex-wrap gap-7 gap-x-10">
-          <div className="w-full md:w-1/3">
-            <label htmlFor="noKta" className="block text-sm font-medium text-gray-700">
-              No KTA
-            </label>
-            <input
-              type="text"
-              id="noKta"
-              value={noKta}
-              onChange={(e) => setNoKta(e.target.value)}
-              placeholder="No KTA"
-              className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.noKta && <p className="text-red-500 text-sm mt-1">{errors.noKta}</p>}
-          </div>
-          <div className="w-full md:w-1/3">
+        <form noValidate onSubmit={handleSubmit} className="flex justify-center flex-wrap gap-7 gap-x-10">
+        
+          <div className="w-full md:w-1/3 ">
             <label htmlFor="nama" className="block text-sm font-medium text-gray-700">
               Nama
             </label>
@@ -96,11 +84,54 @@ export const TambahNasabahPage = () => {
               value={nama}
               onChange={(e) => setNama(e.target.value)}
               placeholder="Nama"
-              className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
+              required            
+              className="peer invalid:border-red-500 invalid:focus:ring-red-500 valid:border-green-500 valid:focus:ring-green-500 p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
             />
+            <div className="pointer-events-none opacity-0 peer-valid:opacity-100 -translate-y-7 justify-end flex mr-3">
+              <CheckCircleIcon className="h-5 w-5 text-green-500"/>
+            </div>
             {errors.nama && <p className="text-red-500 text-sm mt-1">{errors.nama}</p>}
           </div>
+          
+          <div className="w-full md:w-1/3">
+            <label htmlFor="nik" className="block text-sm font-medium text-gray-700">
+              NIK
+            </label>
+            <input
+              type="text"
+              id="nik"
+              value={nik}
+              onChange={(e) => setNik(e.target.value.replace(/\D+/g, ""))}
+              placeholder="NIK"
+              pattern="[0-9]{16}"
+              required
+              className="peer invalid:border-red-500 invalid:focus:ring-red-500 valid:border-green-500 valid:focus:ring-green-500 p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
+            />
+            <div className="pointer-events-none opacity-0 peer-valid:opacity-100 -translate-y-7 justify-end flex mr-3">
+              <CheckCircleIcon className="h-5 w-5 text-green-500" />
+            </div>
+            {errors.nik && <p className="text-red-500 text-sm mt-1">{errors.nik || "NIK harus 16 digit angka"}</p>}
+          </div>
+
+          <div className="w-full md:w-1/3">
+            <label htmlFor="noKta" className="block text-sm font-medium text-gray-700">
+              No.KTA
+            </label>
+            <input
+              type="text"
+              id="noKta"
+              value={noKta}
+              onChange={(e) => setNoKta(e.target.value)}
+              placeholder="No KTA"
+              required
+              className="peer invalid:border-red-500 invalid:focus:ring-red-500 valid:border-green-500 valid:focus:ring-green-500 p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
+            />
+            <div className="pointer-events-none opacity-0 peer-valid:opacity-100 -translate-y-7 justify-end flex mr-3">
+              <CheckCircleIcon className="h-5 w-5 text-green-500" />
+            </div>
+            {errors.noKta && <p className="text-red-500 text-sm mt-1">{errors.noKta}</p>}
+          </div>
+
           <div className="w-full md:w-1/3">
             <label htmlFor="telepon" className="block text-sm font-medium text-gray-700">
               Telepon
@@ -118,27 +149,15 @@ export const TambahNasabahPage = () => {
                 setTelepon(result.join("-"));
               }}
               placeholder="08xx-xxxx-xxxx"
-              className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              className="peer invalid:border-red-500 invalid:focus:ring-red-500 valid:border-green-500 valid:focus:ring-green-500 p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
             />
+            <div className="pointer-events-none opacity-0 peer-valid:opacity-100 -translate-y-7 justify-end flex mr-3">
+              <CheckCircleIcon className="h-5 w-5 text-green-500" />
+            </div>
             {errors.telepon && <p className="text-red-500 text-sm mt-1">{errors.telepon}</p>}
           </div>
-          <div className="w-full md:w-1/3">
-            <label htmlFor="nik" className="block text-sm font-medium text-gray-700">
-              NIK
-            </label>
-            <input
-              type="text"
-              id="nik"
-              value={nik}
-              onChange={(e) => setNik(e.target.value.replace(/\D+/g, ""))}
-              placeholder="NIK"
-              pattern="[0-9]{16}"
-              className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.nik && <p className="text-red-500 text-sm mt-1">{errors.nik || "NIK harus 16 digit angka"}</p>}
-          </div>
+
           <div className="w-full md:w-1/3">
             <label htmlFor="alamat" className="block text-sm font-medium text-gray-700">
               Alamat
@@ -149,9 +168,12 @@ export const TambahNasabahPage = () => {
               value={alamat}
               onChange={(e) => setAlamat(e.target.value)}
               placeholder="Alamat"
-              className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              className="peer invalid:border-red-500 invalid:focus:ring-red-500 valid:border-green-500 valid:focus:ring-green-500 p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
             />
+            <div className="pointer-events-none opacity-0 peer-valid:opacity-100 -translate-y-7 justify-end flex mr-3">
+              <CheckCircleIcon className="h-5 w-5 text-green-500" />
+            </div>
             {errors.alamat && <p className="text-red-500 text-sm mt-1">{errors.alamat}</p>}
           </div>
           <div className="w-full md:w-1/3">
@@ -164,11 +186,15 @@ export const TambahNasabahPage = () => {
               value={kodeMarketing}
               onChange={(e) => setKodeMarketing(e.target.value)}
               placeholder="Kode Marketing"
-              className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              className="peer invalid:border-red-500 invalid:focus:ring-red-500 valid:border-green-500 valid:focus:ring-green-500 p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
             />
+            <div className="pointer-events-none opacity-0 peer-valid:opacity-100 -translate-y-7 justify-end flex mr-3">
+              <CheckCircleIcon className="h-5 w-5 text-green-500" />
+            </div>
             {errors.kodeMarketing && <p className="text-red-500 text-sm mt-1">{errors.kodeMarketing}</p>}
           </div>
+
           {/* Field lainnya */}
           <div className="w-full md:w-1/3">
             <label htmlFor="tanggalLahir" className="block text-sm font-medium text-gray-700">
