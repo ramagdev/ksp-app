@@ -36,11 +36,14 @@ export default function HomePage() {
     const filterResults = () => {
       const lowerQuery = debouncedQuery.toLowerCase();
       const filtered = allNasabah.filter((nasabah) =>
-        nasabah.nama.toLowerCase().includes(lowerQuery)
+        nasabah.nama.toLowerCase().includes(lowerQuery) ||
+        nasabah.noKta.toLowerCase().includes(lowerQuery) ||
+        nasabah.nik.toLowerCase().includes(lowerQuery) ||
+        nasabah.kodeMarketing.toLowerCase().includes(lowerQuery)
       );
       setFilteredNasabah(filtered); // Update filteredNasabah dengan hasil pencarian
     };
-
+  
     filterResults();
   }, [debouncedQuery, allNasabah]);
 
@@ -56,7 +59,7 @@ export default function HomePage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari berdasarkan nama..."
+              placeholder="Cari nama, no KTA, NIK, atau kode marketing"
               className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
             />
           </div>
