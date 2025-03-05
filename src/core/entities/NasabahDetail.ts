@@ -6,7 +6,7 @@ export interface NasabahDetail {
     statusPerkawinan: 'Belum Menikah' | 'Menikah' | 'Duda' | 'Janda';
     namaPasangan: string | null;
     namaPenjamin: string;
-    hubunganPenjamin: 'Anak' | 'Orang Tua' | 'Saudara';
+    hubunganPenjamin: 'Anak' | 'Orang Tua' | 'Saudara'| 'Lainnya';
     teleponPenjamin: string | null;
     foto: File | null;
 }

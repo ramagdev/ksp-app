@@ -19,7 +19,7 @@ export const TambahNasabahPage = () => {
   const [statusPerkawinan, setStatusPerkawinan] = useState<"Belum Menikah" | "Menikah" | "Duda" | "Janda">("Belum Menikah");
   const [namaPasangan, setNamaPasangan] = useState("");
   const [namaPenjamin, setNamaPenjamin] = useState("");
-  const [hubunganPenjamin, setHubunganPenjamin] = useState<"Anak" | "Orang Tua" | "Saudara">("Saudara");
+  const [hubunganPenjamin, setHubunganPenjamin] = useState<"Anak" | "Orang Tua" | "Saudara" | "Lainnya">("Saudara");
   const [teleponPenjamin, setTeleponPenjamin] = useState("");
   const [foto, setFoto] = useState<File | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -271,12 +271,13 @@ export const TambahNasabahPage = () => {
             <select
               id="hubunganPenjamin"
               value={hubunganPenjamin}
-              onChange={(e) => setHubunganPenjamin(e.target.value as 'Anak' | 'Orang Tua' | 'Saudara')}
+              onChange={(e) => setHubunganPenjamin(e.target.value as 'Anak' | 'Orang Tua' | 'Saudara' | 'Lainnya')}
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="Anak">Anak</option>
               <option value="Orang Tua">Orang Tua</option>
               <option value="Saudara">Saudara</option>
+              <option value="Lainnya">Lainnya</option>
             </select>
           </div>
           <div className="w-full md:w-1/3">

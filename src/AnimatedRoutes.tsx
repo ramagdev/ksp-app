@@ -6,7 +6,8 @@ import HomePage from "./presentation/pages/HomePage";
 import { TambahNasabahPage } from "./presentation/pages/TambahNasabahPage";
 import { NotFoundPage } from "./presentation/pages/NotFoundPage";
 import { ProfilNasabahPage } from "./presentation/pages/ProfilNasabahPage";
-import { TambahTransaksiPage } from "./presentation/pages/TambahTransaksiPage";
+// import { TambahTransaksiPage } from "./presentation/pages/TambahTransaksiPage";
+import { ProdukPinjamanForm } from "./presentation/pages/ProdukPinjamanForm";
 import { AppShell } from "./presentation/components/AppShell";
 
 const AnimatedRoute = ({ children, inProp }: { children: React.ReactNode; inProp: boolean }) => {
@@ -63,11 +64,19 @@ const AnimatedRoutes = () => {
             </AnimatedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="nasabah/:id/tambah-transaksi"
           element={
             <AnimatedRoute inProp={location.pathname.startsWith("/nasabah/") && location.pathname.endsWith("/tambah-transaksi")}>
               <TambahTransaksiPage />
+            </AnimatedRoute>
+          }
+        /> */}
+        <Route
+          path="tambah-produk-pinjaman"
+          element={
+            <AnimatedRoute inProp={location.pathname === "/tambah-produk-pinjaman"}>
+              <ProdukPinjamanForm />
             </AnimatedRoute>
           }
         />

@@ -1,8 +1,8 @@
 export interface Transaksi {
-    id: number;
-    nasabahId: number;
+    id?: number;
+    pinjamanId: number; // Relasi ke Pinjaman
     tanggalTransaksi: Date;
     jumlahTransaksi: number;
-    status: "Cicilan" | "Pinjaman";
+    jenisTransaksi: "Pinjaman" | "Cicilan";
     keterangan?: string;
   }

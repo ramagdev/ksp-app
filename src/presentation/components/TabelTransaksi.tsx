@@ -7,7 +7,7 @@ import {
   ColumnDef,
   flexRender,
 } from "@tanstack/react-table";
-import { Transaksi } from "../../core/entities/Transaksi";
+import { Transaksi } from "../../core/entities/Mutasi/Transaksi";
 
 const columns: ColumnDef<Transaksi>[] = [
   {

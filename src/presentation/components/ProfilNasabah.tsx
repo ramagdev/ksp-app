@@ -114,6 +114,7 @@ export const ProfilNasabah: React.FC<ProfilNasabahProps> = ({ nasabah, detail, o
             { value: "Anak", label: "Anak" },
             { value: "Orang Tua", label: "Orang Tua" },
             { value: "Saudara", label: "Saudara" },
+            { value: "Lainnya", label: "Lainnya" },
           ]}
           onSave={(value) => onSave("hubunganPenjamin", value)}
         />

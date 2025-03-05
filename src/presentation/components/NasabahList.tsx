@@ -1,8 +1,8 @@
 import { Nasabah } from "../../core/entities/Nasabah";
 import { useNavigate } from "react-router-dom"; // Tambahkan useNavigate
 import { PlusIcon } from "@heroicons/react/24/outline"; // Tambahkan PlusIcon
-import { useState } from "react";
-import { ModalTambahTransaksi } from "./ModalTambahTransaksi"; // Import komponen modal
+// import { useState } from "react";
+// import { ModalTambahTransaksi } from "./ModalTambahTransaksi"; // Import komponen modal
 
 interface NasabahListProps {
   nasabahList: Nasabah[];
@@ -11,22 +11,22 @@ interface NasabahListProps {
 }
 
 export default function NasabahList({ nasabahList, isLoading, error }: NasabahListProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false); // State untuk modal
-  const [selectedNasabahId, setSelectedNasabahId] = useState<number | null>(null); // State untuk menyimpan ID nasabah yang dipilih
-  const [selectedNasabahName, setSelectedNasabahName] = useState<string>("");
+  // const [isModalOpen, setIsModalOpen] = useState(false); // State untuk modal
+  // const [selectedNasabahId, setSelectedNasabahId] = useState<number | null>(null); // State untuk menyimpan ID nasabah yang dipilih
+  // const [selectedNasabahName, setSelectedNasabahName] = useState<string>("");
   const navigate = useNavigate(); // Hook untuk navigasi
 
-  const handleOpenModal = (nasabahId: number, namaNasabah: string) => {
+  // const handleOpenModal = (nasabahId: number, namaNasabah: string) => {
   
-    setSelectedNasabahId(nasabahId);
-    setSelectedNasabahName(namaNasabah);
-    setIsModalOpen(true);
-  };
+  //   setSelectedNasabahId(nasabahId);
+  //   setSelectedNasabahName(namaNasabah);
+  //   setIsModalOpen(true);
+  // };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedNasabahId(null);
-  };
+  // const handleCloseModal = () => {
+  //   setIsModalOpen(false);
+  //   setSelectedNasabahId(null);
+  // };
 
   const handleRowClick = (nasabahId: number) => {
     navigate(`/nasabah/${nasabahId}`); // Navigasi ke halaman profil nasabah
@@ -89,7 +89,7 @@ export default function NasabahList({ nasabahList, isLoading, error }: NasabahLi
                       handleRowClick(nasabah.id);
                     }
                   }}
-                  className="hover:bg-blue-50 transition-colors cursor-pointer group"
+                  className="hover:bg-blue-50 transition-colors group"
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {nasabah.noKta}
@@ -114,10 +114,10 @@ export default function NasabahList({ nasabahList, isLoading, error }: NasabahLi
                       onClick={(e) => {
                         e.stopPropagation(); // Mencegah event bubbling ke <tr>
                         if (nasabah.id !== undefined) {
-                          handleOpenModal(nasabah.id, nasabah.nama);
+                          // handleOpenModal(nasabah.id, nasabah.nama);
                         }
                       }}
-                      className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
+                      className="p-2 bg-blue-500 text-white rounded-full cursor-pointer hover:bg-green-500 transition-colors"
                     >
                       <PlusIcon className="w-5 h-5" />
                     </button>
@@ -134,13 +134,13 @@ export default function NasabahList({ nasabahList, isLoading, error }: NasabahLi
       )}
 
       {/* Modal Tambah Transaksi */}
-      {isModalOpen && selectedNasabahId && (
+      {/* {isModalOpen && selectedNasabahId && (
         <ModalTambahTransaksi
         nasabahId={selectedNasabahId}
         namaNasabah={selectedNasabahName} // Ganti dengan nama nasabah yang sesuai
         onClose={handleCloseModal}
         />
-      )}
+      )} */}
     </div>
   );
 }
