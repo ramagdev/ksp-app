@@ -17,6 +17,7 @@ export class EditNasabahProfile {
       const updates: Record<string, any> = { [field]: value };
   
       // Perbarui data nasabah jika field ada di nasabah
+      console.log(this.nasabahRepo.nasabah.schema.idxByName);
       if (field in this.nasabahRepo.nasabah.schema.idxByName) {
         await this.nasabahRepo.nasabah.update(nasabahId, updates);
       }

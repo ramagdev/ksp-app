@@ -19,7 +19,7 @@ export const ProfilNasabah: React.FC<ProfilNasabahProps> = ({ nasabah, detail, o
         <div className="col-span-1 md:col-span-2 p-3 pt-0">
           <h2 className="text-2xl font-semibold text-gray-700 mb-4">Informasi Pribadi</h2>
           <div className="space-y-4">
-          <EditableField
+            <EditableField
               label="No.KTA"
               value={nasabah.noKta}
               onSave={(value) => onSave("noKta", value)}

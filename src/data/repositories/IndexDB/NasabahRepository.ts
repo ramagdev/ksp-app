@@ -9,7 +9,7 @@ export class NasabahIndexedDBRepository extends Dexie implements NasabahReposito
   constructor() {
     super("KoperasiDB");
     this.version(1).stores({
-      nasabah: "++id, nama, telepon, alamat",
+      nasabah: "++id, noKta, nama, telepon, nik, alamat, kodeMarketing",
     });
     this.nasabah = this.table("nasabah");
     // this.validateData();

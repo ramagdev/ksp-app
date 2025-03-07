@@ -62,7 +62,7 @@ export const ProfilNasabahPage = () => {
 
   const handleSave = async (field: string, value: any) => {
     if (!nasabah) return;
-  
+    console.log(field, value);
     const { success, error } = await editProfileUseCase.execute(
       nasabah.id!,
       field,
