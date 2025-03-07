@@ -5,7 +5,7 @@ interface EditableFieldProps {
   label: string;
   value: any;
   type?: "text" | "date" | "select";
-  options?: Array<{ value: string; label: string }>;
+  options?: { value: string; label: string }[];
   onSave: (value: any) => void;
 }
 

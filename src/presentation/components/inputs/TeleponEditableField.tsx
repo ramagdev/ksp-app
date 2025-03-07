@@ -4,7 +4,7 @@ import { PencilIcon, CheckIcon, XMarkIcon as XIcon } from "@heroicons/react/24/o
 interface TeleponEditableFieldProps {
   label: string;
   value: any;
-  options?: Array<{ value: string; label: string }>;
+  options?: { value: string; label: string }[];
   onSave: (value: any) => void;
 }
 

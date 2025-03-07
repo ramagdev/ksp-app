@@ -1,10 +1,10 @@
 import { write, utils } from 'xlsx';
 
 export class BackupMultipleTablesToExcel {
-  constructor(private repositories: { [key: string]: any }) {}
+  constructor(private repositories: Record<string, any>) {}
 
-  async execute(): Promise<{ [key: string]: Blob }> {
-    const backups: { [key: string]: Blob } = {};
+  async execute(): Promise<Record<string, Blob>> {
+    const backups: Record<string, Blob> = {};
 
     for (const [tableName, repository] of Object.entries(this.repositories)) {
       const data = await repository.getAll();

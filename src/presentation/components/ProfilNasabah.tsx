@@ -3,7 +3,7 @@ import React from "react";
 import { Nasabah } from "../../core/entities/Nasabah";
 import { NasabahDetail } from "../../core/entities/NasabahDetail";
 import { EditableField } from "../components/EditableField";
-import { TeleponEditableField } from "./TeleponEditableField";
+import { TeleponEditableField } from "./inputs/TeleponEditableField";
 
 interface ProfilNasabahProps {
   nasabah: Nasabah;
@@ -22,7 +22,7 @@ export const ProfilNasabah: React.FC<ProfilNasabahProps> = ({ nasabah, detail, o
           <EditableField
               label="No.KTA"
               value={nasabah.noKta}
-              onSave={(value) => onSave("naoKta", value)}
+              onSave={(value) => onSave("noKta", value)}
             />
             <EditableField
               label="Nama"

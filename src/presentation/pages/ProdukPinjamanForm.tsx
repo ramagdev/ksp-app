@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { createProdukPinjaman } from '../../container';
 import { RequiredTextInput } from '../components/inputs/RequiredTextInput';
 import { useNavigate } from 'react-router-dom';
+import { RupiahInput } from '../components/inputs/RupiahInput';
 
 export const ProdukPinjamanForm = () => {
     const [namaProduk, setNamaProduk] = useState('');
-    const [jarakCicilan, setJarakCicilan] = useState(0);
+    const [jarakCicilan, setJarakCicilan] = useState(1);
     const [bunga, setBunga] = useState(0);
     const [jenisPeminjam, setJenisPeminjam] = useState<'Perorangan' | 'Kelompok'>('Perorangan');
     const [maksimumPinjaman, setMaksimumPinjaman] = useState(0);
@@ -59,7 +60,8 @@ export const ProdukPinjamanForm = () => {
                     {/* Nama Produk */}
                     <div className="col-span-2">
                         <RequiredTextInput
-                            id={namaProduk}
+                            id="namaProduk"
+                            value={namaProduk}
                             onChange={(e) => setNamaProduk(e.target.value)}
                             label="Nama Produk"
                             errorMsg={errors.namaProduk}
@@ -107,7 +109,7 @@ export const ProdukPinjamanForm = () => {
                             id="jenisPeminjam"
                             value={jenisPeminjam}
                             onChange={(e) => setJenisPeminjam(e.target.value as 'Perorangan' | 'Kelompok')}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2"
                         >
                             <option value="Perorangan">Perorangan</option>
                             <option value="Kelompok">Kelompok</option>
@@ -115,34 +117,18 @@ export const ProdukPinjamanForm = () => {
                     </div>
 
                     {/* Maksimum Pinjaman */}
-                    <div>
-                        <label htmlFor="maksimumPinjaman" className="block text-sm font-medium text-gray-700">
-                            Maksimum Pinjaman
-                        </label>
-                        <input
-                            type="number"
-                            id="maksimumPinjaman"
-                            value={maksimumPinjaman}
-                            onChange={(e) => setMaksimumPinjaman(Number(e.target.value))}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                            required
-                        />
-                    </div>
+                    <RupiahInput 
+                        id="maksimumPinjaman" 
+                        label="Maksimum Pinjaman(Rp)"
+                        onChange={(value) => setMaksimumPinjaman(Number(value))}
+                    />
 
                     {/* Minimum Pinjaman */}
-                    <div>
-                        <label htmlFor="minimumPinjaman" className="block text-sm font-medium text-gray-700">
-                            Minimum Pinjaman
-                        </label>
-                        <input
-                            type="number"
-                            id="minimumPinjaman"
-                            value={minimumPinjaman}
-                            onChange={(e) => setMinimumPinjaman(Number(e.target.value))}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                            required
-                        />
-                    </div>
+                    <RupiahInput 
+                        id="minimumPinjaman" 
+                        label="Minimum Pinjaman(Rp)"
+                        onChange={(value) => setMinimumPinjaman(Number(value))}
+                    />
 
                     {/* Keterangan */}
                     <div className="col-span-2">
@@ -153,7 +139,7 @@ export const ProdukPinjamanForm = () => {
                             id="keterangan"
                             value={keterangan}
                             onChange={(e) => setKeterangan(e.target.value)}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2"
                             rows={3}
                         />
                     </div>

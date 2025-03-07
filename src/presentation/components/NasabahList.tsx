@@ -80,7 +80,7 @@ export default function NasabahList({ nasabahList, isLoading, error }: NasabahLi
           </thead>
           <tbody className="divide-y divide-gray-200">
             {nasabahList
-              .filter((nasabah) => nasabah !== undefined && nasabah !== null && nasabah.id !== undefined) // Filter elemen yang tidak valid
+              .filter((nasabah) => nasabah?.id !== undefined) // Filter elemen yang tidak valid
               .map((nasabah) => (
                 <tr
                   key={nasabah.id}

@@ -3,6 +3,7 @@ import { CheckCircleIcon } from "@heroicons/react/24/solid";
 interface RequiredTextInputProps {
     id: string;
     label: string;
+    value: string;
     onChange: (e: any) => void;
     pattern?: string;
     errorMsg: string;
@@ -12,6 +13,7 @@ interface RequiredTextInputProps {
 export const RequiredTextInput = ({
     id,
     label,
+    value,
     onChange,
     pattern,
     errorMsg,
@@ -26,7 +28,7 @@ return (
             <input
               type="text"
               id={id}
-              value={id}
+              value={value}
               onChange={onChange}
               placeholder={label}
               pattern={pattern}
