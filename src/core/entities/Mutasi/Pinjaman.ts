@@ -4,6 +4,6 @@ export interface Pinjaman {
     produkPinjamanId: number; // Relasi ke ProdukPinjaman
     tanggalPinjaman: Date;
     jumlahPinjaman: number;
-    keterangan?: string;
     status: 'Aktif' | 'Lunas' | 'Macet' | 'Gagal';
+    keterangan?: string;
 }

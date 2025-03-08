@@ -1,8 +1,8 @@
 export interface Transaksi {
     id?: number;
-    pinjamanId: number; // Relasi ke Pinjaman
     tanggalTransaksi: Date;
+    jenisTransaksi: "Pinjaman" | "Pembayaran Cicilan";
+    pinjamanId: number; // Relasi ke Pinjaman
     jumlahTransaksi: number;
-    jenisTransaksi: "Pinjaman" | "Cicilan";
     keterangan?: string;
   }

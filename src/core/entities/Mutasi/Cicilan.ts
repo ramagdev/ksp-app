@@ -3,7 +3,7 @@ export interface Cicilan {
     pinjamanId: number; // Relasi ke Pinjaman
     tanggalJatuhTempo: Date;
     jumlahHarusDibayar: number; // Jumlah cicilan + bunga
-    status: 'Belum Bayar' | 'Dibayar' | 'Macet';
     tanggalPembayaran?: Date; // Diisi saat cicilan dibayar
+    status: 'Belum Bayar' | 'Dibayar' | 'Macet' | 'Terlambat';
     keterangan?: string;
 }

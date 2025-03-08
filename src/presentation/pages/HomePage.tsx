@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Nasabah } from "../../core/entities/Nasabah";
-import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
+import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexedDB/NasabahRepository";
 import NasabahList from "../components/NasabahList";
 import { useDebounce } from "use-debounce";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"; // Ikon pencarian
@@ -53,7 +53,7 @@ export default function HomePage() {
         {/* Header */}
         <div className="flex sm:flex-row justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Daftar Nasabah</h1>
-          <div className="relative w-full sm:w-80 mt-4 sm:mt-0">
+          <div className="relative md:w-1/3 sm:w-80 mt-4 sm:mt-0 mr-10">
             <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"

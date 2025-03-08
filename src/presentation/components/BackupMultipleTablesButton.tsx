@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BackupMultipleTablesToExcel } from '../../core/usecases/BackupMultipleTablesToExcel';
-import { NasabahIndexedDBRepository } from '../../data/repositories/IndexDB/NasabahRepository';
-import { NasabahDetailIndexedDBRepository } from '../../data/repositories/IndexDB/NasabahDetailRepository';
+import { NasabahIndexedDBRepository } from '../../data/repositories/IndexedDB/NasabahRepository';
+import { NasabahDetailIndexedDBRepository } from '../../data/repositories/IndexedDB/NasabahDetailRepository';
 
 const MIN_BACKUP_INTERVAL = 5 * 60 * 1000; // 5 menit dalam milidetik
 const BackupMultipleTablesButton: React.FC<{ isSidebarOpen: boolean; isMenuOpen: boolean }> = ({ isSidebarOpen, isMenuOpen }) => {

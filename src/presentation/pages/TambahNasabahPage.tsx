@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
-import { NasabahDetailIndexedDBRepository as NasabahDetailRepository } from "../../data/repositories/IndexDB/NasabahDetailRepository";
+import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexedDB/NasabahRepository";
+import { NasabahDetailIndexedDBRepository as NasabahDetailRepository } from "../../data/repositories/IndexedDB/NasabahDetailRepository";
 import { useNavigate } from "react-router-dom";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 

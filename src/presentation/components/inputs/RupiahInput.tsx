@@ -4,6 +4,7 @@ interface RupiahInputProps {
     id: string;
     label: string;
     onChange: (value: string) => void;
+    required?: boolean;
 }
 
 export const RupiahInput = (props: RupiahInputProps) => {
@@ -26,6 +27,7 @@ export const RupiahInput = (props: RupiahInputProps) => {
                 onChange={(e) => formattedValue(e.target.value)}
                 placeholder={props.label}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2"
+                required={props.required}
             />
         </div>
     );

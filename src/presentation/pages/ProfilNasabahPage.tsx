@@ -3,12 +3,12 @@ import { useParams } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import { Nasabah} from "../../core/entities/Nasabah";
 import { NasabahDetail } from "../../core/entities/NasabahDetail";
-import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexDB/NasabahRepository";
-import { NasabahDetailIndexedDBRepository as NasabahDetailRepository } from "../../data/repositories/IndexDB/NasabahDetailRepository";
+import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexedDB/NasabahRepository";
+import { NasabahDetailIndexedDBRepository as NasabahDetailRepository } from "../../data/repositories/IndexedDB/NasabahDetailRepository";
 import { EditNasabahProfile } from "../../core/usecases/EditNasabahProfile";
 import { ProfilNasabah } from "../components/ProfilNasabah";
 // import { HistoryTransaksi } from "../components/HistoryTransaksi";
-// import { ModalTambahTransaksi } from "../components/ModalTambahTransaksi"; // Komponen modal baru
+import { ModalCatatTransaksi } from "./modalpages/ModalCatatTransaksi";
 
 const nasabahRepo = new NasabahRepository();
 const nasabahDetailRepo = new NasabahDetailRepository();
@@ -20,7 +20,7 @@ export const ProfilNasabahPage = () => {
   const [detail, setDetail] = useState<NasabahDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // const [isModalOpen, setIsModalOpen] = useState(false); // State untuk modal
+  const [isModalOpen, setIsModalOpen] = useState(false); // State untuk modal
 
   useEffect(() => {
     const loadData = async () => {
@@ -85,13 +85,9 @@ export const ProfilNasabahPage = () => {
     }
   };
 
-  // const handleTambahTransaksi = () => {
-  //   setIsModalOpen(true); // Buka modal
-  // };
-
-  // const handleCloseModal = () => {
-  //   setIsModalOpen(false); // Tutup modal
-  // };
+  const handleCatatTransaksi = () => {
+    setIsModalOpen(true); // Buka modal
+  };
 
   if (isLoading) {
     return (
@@ -162,26 +158,25 @@ export const ProfilNasabahPage = () => {
             <Tab.Panel className="bg-white p-4 rounded-lg shadow">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">History Transaksi</h2>
-                {/* <button
-                  onClick={handleTambahTransaksi}
+                <button
+                  onClick={handleCatatTransaksi}
                   className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
                 >
-                  + Tambah Transaksi
-                </button> */}
+                  + Catat Transaksi
+                </button>
               </div>
               {/* <HistoryTransaksi nasabahId={nasabah.id!} /> */}
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
 
-        {/* Modal Tambah Transaksi */}
-        {/* {isModalOpen && (
-          <ModalTambahTransaksi
-            nasabahId={nasabah.id!}
-            namaNasabah={nasabah.nama}
-            onClose={handleCloseModal}
+        {/* Modal Catat Transaksi */}
+        {(isModalOpen && nasabah.id) && (
+          <ModalCatatTransaksi
+            nasabahId={nasabah.id} // Ganti dengan ID nasabah yang sesuai
+            onClose={() => setIsModalOpen(false)}
           />
-        )} */}
+        )}
       </div>
 
   );

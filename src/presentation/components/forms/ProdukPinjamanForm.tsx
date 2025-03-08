@@ -1,60 +1,65 @@
 import React, { useState } from 'react';
-import { createProdukPinjaman } from '../../container';
-import { RequiredTextInput } from '../components/inputs/RequiredTextInput';
+import { RequiredTextInput } from '../inputs/RequiredTextInput';
 import { useNavigate } from 'react-router-dom';
-import { RupiahInput } from '../components/inputs/RupiahInput';
+import { RupiahInput } from '../inputs/RupiahInput';
+import { ProdukPinjaman } from '../../../core/entities/Mutasi/ProdukPinjaman';
 
-export const ProdukPinjamanForm = () => {
-    const [namaProduk, setNamaProduk] = useState('');
-    const [jarakCicilan, setJarakCicilan] = useState(1);
-    const [bunga, setBunga] = useState(0);
-    const [jenisPeminjam, setJenisPeminjam] = useState<'Perorangan' | 'Kelompok'>('Perorangan');
-    const [maksimumPinjaman, setMaksimumPinjaman] = useState(0);
-    const [minimumPinjaman, setMinimumPinjaman] = useState(0);
-    const [keterangan, setKeterangan] = useState('');
+interface ProdukPinjamanFormProps {
+    initialData?: ProdukPinjaman; // Data produk yang akan diedit
+    onSubmit: (produk: Omit<ProdukPinjaman, 'id'>) => Promise<void>; // Fungsi untuk handle submit
+  }
+  
+  export const ProdukPinjamanForm: React.FC<ProdukPinjamanFormProps> = ({ initialData, onSubmit }) => {
+    const [namaProduk, setNamaProduk] = useState(initialData?.namaProduk || '');
+    const [jarakCicilan, setJarakCicilan] = useState<"Harian" | "Mingguan" | "Bulanan">(initialData?.jarakCicilan || "Harian");
+    const [bunga, setBunga] = useState(initialData?.bunga || 0);
+    const [jenisPeminjam, setJenisPeminjam] = useState<'Perorangan' | 'Kelompok'>(initialData?.jenisPeminjam || 'Perorangan');
+    const [maksimumPinjaman, setMaksimumPinjaman] = useState(initialData?.maksimumPinjaman || 0);
+    const [minimumPinjaman, setMinimumPinjaman] = useState(initialData?.minimumPinjaman || 0);
+    const [keterangan, setKeterangan] = useState(initialData?.keterangan || '');
     const [errors, setErrors] = useState<Record<string, string>>({});
     const navigate = useNavigate();
-
+  
     const validateForm = () => {
-        const newErrors: Record<string, string> = {};
-        if (!namaProduk.trim()) newErrors.namaProduk = "Nama Produk harus diisi.";
-        if (jarakCicilan <= 0) newErrors.jarakCicilan = "Jarak Cicilan harus lebih besar dari 0.";
-
-        return newErrors;
+      const newErrors: Record<string, string> = {};
+      if (!namaProduk.trim()) newErrors.namaProduk = "Nama Produk harus diisi.";
+      return newErrors;
     };
-
+  
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const newErrors = validateForm();
-        if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors);
-            return;
-        }
-
-        try {
-            const produkPinjaman = {
-                namaProduk,
-                jarakCicilan,
-                bunga,
-                jenisPeminjam,
-                maksimumPinjaman,
-                minimumPinjaman,
-                keterangan
-            };
-
-            const id = await createProdukPinjaman.execute(produkPinjaman);
-            navigate('/produk-pinjaman');
-            console.log('Produk Pinjaman created with ID:', id);
-        } catch (err) {
-            setErrors({ general: "Gagal menambahkan produk pinjaman. Silakan coba lagi." });
-        }
+      e.preventDefault();
+  
+      const newErrors = validateForm();
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+      }
+  
+      try {
+        const produkPinjaman = {
+          namaProduk,
+          jarakCicilan,
+          bunga,
+          jenisPeminjam,
+          maksimumPinjaman,
+          minimumPinjaman,
+          keterangan,
+          is_active: true
+        };
+  
+        await onSubmit(produkPinjaman); // Gunakan fungsi onSubmit dari props
+        navigate('/produk-pinjaman');
+      } catch (err) {
+        setErrors({ general: "Gagal menyimpan produk pinjaman. Silakan coba lagi." });
+      }
     };
-
+  
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-4xl p-6 bg-white shadow-md rounded-lg my-10">
-                <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">Tambah Produk Pinjaman</h1>
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="w-full max-w-4xl p-6 bg-white shadow-md rounded-lg my-10">
+          <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">
+            {initialData ? 'Edit Produk Pinjaman' : 'Tambah Produk Pinjaman'}
+          </h1>
 
                 <form noValidate onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Nama Produk */}
@@ -71,17 +76,19 @@ export const ProdukPinjamanForm = () => {
                     {/* Jarak Cicilan */}
                     <div>
                         <label htmlFor="jarakCicilan" className="block text-sm font-medium text-gray-700">
-                            Jarak Cicilan (hari, minimal 1 hari)
+                            Jarak Cicilan (harian, mingguan, bulanan)
                         </label>
-                        <input
-                            type="number"
+                        <select
                             id="jarakCicilan"
                             value={jarakCicilan}
-                            onChange={(e) => setJarakCicilan(Math.max(1, Number(e.target.value)))}
-                            min={1}
+                            onChange={(e) => setJarakCicilan(e.target.value as 'Harian' | 'Mingguan' | 'Bulanan')}
                             required
-                            className="invalid:border-red-500 invalid:focus:ring-red-500 valid:border-green-500 valid:focus:ring-green-500 p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
-                        />
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2"
+                        >
+                            <option value="Harian">Harian</option>
+                            <option value="Mingguan">Mingguan</option>
+                            <option value="Bulanan">Bulanan</option>    
+                        </select>
                         {errors.jarakCicilan && <p className="text-red-500 text-sm mt-1">{errors.jarakCicilan}</p>}
                     </div>
 
@@ -94,7 +101,7 @@ export const ProdukPinjamanForm = () => {
                             type="number"
                             id="bunga"
                             value={bunga}
-                            onChange={(e) => setBunga(Number(e.target.value))}
+                            onChange={(e) => setBunga(Math.max(0, Number(e.target.value)))}
                             required
                             className="invalid:border-red-500 invalid:focus:ring-red-500 valid:border-green-500 valid:focus:ring-green-500 p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
                         />

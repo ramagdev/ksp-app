@@ -7,7 +7,9 @@ import { TambahNasabahPage } from "./presentation/pages/TambahNasabahPage";
 import { NotFoundPage } from "./presentation/pages/NotFoundPage";
 import { ProfilNasabahPage } from "./presentation/pages/ProfilNasabahPage";
 // import { TambahTransaksiPage } from "./presentation/pages/TambahTransaksiPage";
-import { ProdukPinjamanForm } from "./presentation/pages/ProdukPinjamanForm";
+import { ProdukPinjamanPage } from "./presentation/pages/ProdukPinjamanPage";
+import { TambahProdukPinjamanPage } from "./presentation/pages/TambahProdukPinjamanPage";
+import { EditProdukPinjamanPage } from "./presentation/pages/EditProdukPinjamanPage";
 import { AppShell } from "./presentation/components/AppShell";
 
 const AnimatedRoute = ({ children, inProp }: { children: React.ReactNode; inProp: boolean }) => {
@@ -73,10 +75,26 @@ const AnimatedRoutes = () => {
           }
         /> */}
         <Route
-          path="tambah-produk-pinjaman"
+          path="produk-pinjaman"
           element={
-            <AnimatedRoute inProp={location.pathname === "/tambah-produk-pinjaman"}>
-              <ProdukPinjamanForm />
+            <AnimatedRoute inProp={location.pathname === "/produk-pinjaman"}>
+              <ProdukPinjamanPage />
+            </AnimatedRoute>
+          }
+        />
+        <Route
+          path="produk-pinjaman/tambah"
+          element={
+            <AnimatedRoute inProp={location.pathname === "/produk-pinjaman/tambah"}>
+              <TambahProdukPinjamanPage />
+            </AnimatedRoute>
+          }
+        />
+        <Route
+          path="produk-pinjaman/edit/:id"
+          element={
+            <AnimatedRoute inProp={location.pathname.startsWith("/produk-pinjaman/edit/")}>
+              <EditProdukPinjamanPage/>
             </AnimatedRoute>
           }
         />

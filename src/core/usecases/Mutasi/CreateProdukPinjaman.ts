@@ -1,5 +1,5 @@
 
-import { ProdukPinjamanRepository } from '../../repositories/ProdukPinjamanRepository';
+import { ProdukPinjamanRepository } from '../../repositories/Mutasi/ProdukPinjamanRepository';
 import { ProdukPinjaman } from '../../entities/Mutasi/ProdukPinjaman';
 
 export class CreateProdukPinjaman {
