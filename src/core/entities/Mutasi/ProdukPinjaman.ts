@@ -1,11 +1,18 @@
-export interface ProdukPinjaman {
+// Entity TypeScript
+export interface ProdukPinjamanEntity {
     id?: number;
-    namaProduk: string; // Misalnya: "Pinjaman Harian", "Pinjaman Mingguan", dll.
+    namaProduk: string;
     jarakCicilan: 'Harian' | 'Mingguan' | 'Bulanan';
-    bunga: number; // Bunga dalam persentase
-    jenisPeminjam: 'Perorangan' | 'Kelompok'; // Apakah pinjaman untuk perorangan atau kelompok
-    maksimumPinjaman?: number; // Batas maksimum pinjaman (opsional)
-    minimumPinjaman?: number; // Batas minimum pinjaman (opsional)
-    keterangan?: string; // Deskripsi tambahan tentang produk pinjaman
-    is_active: boolean;
+    banyakCicilan: number;
+    bunga: number;
+    jenisPeminjam: 'Perorangan' | 'Kelompok';
+    maksimumPinjaman?: number;
+    minimumPinjaman?: number;
+    keterangan?: string;
+    is_active: boolean; // boolean di entity
+}
+
+// Tipe untuk Dexie
+export interface ProdukPinjamanDexie extends Omit<ProdukPinjamanEntity, 'is_active'> {
+    is_active: number; // number di Dexie
 }

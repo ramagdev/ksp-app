@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { CreateNewLoan } from "../../../core/usecases/Mutasi/CreateNewLoan";
-import { ProdukPinjaman } from "../../../core/entities/Mutasi/ProdukPinjaman";
-import { GetAllProdukPinjaman } from "../../../core/usecases/Mutasi/GetAllProdukPinjaman";
+import { ProdukPinjamanEntity } from "../../../core/entities/Mutasi/ProdukPinjaman";
 import { RupiahInput } from "../../components/inputs/RupiahInput";
+import { getAllProdukPinjaman, createNewLoan } from "../../../container";
 
 interface TabPinjamanBaruProps {
   nasabahId: number;
   onCreateSuccess: (pinjamanId: number) => void;
-  createNewLoan: CreateNewLoan;
-  getAllProdukPinjaman: GetAllProdukPinjaman;
 }
 
 export const TabPinjamanBaru: React.FC<TabPinjamanBaruProps> = ({
   nasabahId,
-  onCreateSuccess,
-  createNewLoan,
-  getAllProdukPinjaman,
+  onCreateSuccess
 }) => {
   const [jumlahPinjaman, setJumlahPinjaman] = useState<number>(0);
   const [tanggalPinjaman, setTanggalPinjaman] = useState<Date>(new Date());
   const [keterangan, setKeterangan] = useState<string>("");
   const [produkPinjamanId, setProdukPinjamanId] = useState<number | null>(null);
-  const [produkPinjamanList, setProdukPinjamanList] = useState<ProdukPinjaman[]>([]);
+  const [produkPinjamanList, setProdukPinjamanList] = useState<ProdukPinjamanEntity[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -46,7 +41,7 @@ export const TabPinjamanBaru: React.FC<TabPinjamanBaruProps> = ({
     }
 
     try {
-      const pinjamanId = await createNewLoan.execute(
+      await createNewLoan.execute(
         nasabahId,
         produkPinjamanId,
         jumlahPinjaman,
@@ -54,7 +49,7 @@ export const TabPinjamanBaru: React.FC<TabPinjamanBaruProps> = ({
         keterangan
       );
       setMessage({ type: "success", text: "Pinjaman berhasil dibuat!" });
-      onCreateSuccess(pinjamanId); // Panggil callback untuk memberi tahu parent
+      onCreateSuccess(jumlahPinjaman); // Panggil callback untuk memberi tahu parent
     } catch (error) {
       setMessage({ type: "error", text: "Gagal membuat pinjaman. Silakan coba lagi." });
     } finally {

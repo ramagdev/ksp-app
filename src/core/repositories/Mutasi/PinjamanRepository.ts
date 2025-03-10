@@ -1,9 +1,8 @@
 // src/core/repositories/Mutasi/PinjamanRepository.ts
 import { Pinjaman } from '../../entities/Mutasi/Pinjaman';
-import { Transaksi } from '../../entities/Mutasi/Transaksi';
 
 export interface PinjamanRepository {
-  createPinjaman(pinjaman: Omit<Pinjaman, 'id'>): Promise<number>; // Mengembalikan ID pinjaman yang baru dibuat
-  createTransaksi(transaksi: Omit<Transaksi, 'id'>): Promise<void>;
+  createPinjaman(pinjaman: Omit<Pinjaman, 'id'>): Promise<number>;
   getPinjamanAktifByNasabahId(nasabahId: number): Promise<Pinjaman[]>;
+  getPinjamanById(pinjamanId: number): Promise<Pinjaman | undefined>; // Tambahkan ini
 }

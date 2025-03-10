@@ -1,11 +1,11 @@
 
 import { ProdukPinjamanRepository } from '../../repositories/Mutasi/ProdukPinjamanRepository';
-import { ProdukPinjaman } from '../../entities/Mutasi/ProdukPinjaman';
+import { ProdukPinjamanEntity } from '../../entities/Mutasi/ProdukPinjaman';
 
 export class CreateProdukPinjaman {
     constructor(private produkPinjamanRepository: ProdukPinjamanRepository) {}
 
-    async execute(produkPinjaman: Omit<ProdukPinjaman, 'id'>): Promise<number> {
+    async execute(produkPinjaman: Omit<ProdukPinjamanEntity, 'id'>): Promise<number> {
         return await this.produkPinjamanRepository.create(produkPinjaman);
     }
 }

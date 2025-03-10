@@ -1,33 +1,25 @@
 // src/data/repositories/IndexedDB/PinjamanIndexedDBRepository.ts
 import { PinjamanRepository } from '../../../core/repositories/Mutasi/PinjamanRepository';
 import { Pinjaman } from '../../../core/entities/Mutasi/Pinjaman';
-import { Transaksi } from '../../../core/entities/Mutasi/Transaksi';
 import Dexie from 'dexie';
 
-class MyDatabase extends Dexie {
+class KoperasiDB extends Dexie {
   pinjaman: Dexie.Table<Pinjaman, number>;
-  transaksi: Dexie.Table<Transaksi, number>;
 
   constructor() {
-    super('MyDatabase');
+    super('KoperasiDB');
     this.version(1).stores({
-      pinjaman: '++id, nasabahId, produkPinjamanId',
-      transaksi: '++id, pinjamanId',
+      pinjaman: '++id, nasabahId, produkPinjamanId, tanggalPinjaman, jumlahPinjaman, status, keterangan',
     });
     this.pinjaman = this.table('pinjaman');
-    this.transaksi = this.table('transaksi');
   }
 }
 
-const db = new MyDatabase();
+const db = new KoperasiDB();
 
 export class PinjamanIndexedDBRepository implements PinjamanRepository {
   async createPinjaman(pinjaman: Omit<Pinjaman, 'id'>): Promise<number> {
     return await db.pinjaman.add(pinjaman);
-  }
-
-  async createTransaksi(transaksi: Omit<Transaksi, 'id'>): Promise<void> {
-    await db.transaksi.add(transaksi);
   }
 
   async getPinjamanAktifByNasabahId(nasabahId: number): Promise<Pinjaman[]> {
@@ -36,5 +28,9 @@ export class PinjamanIndexedDBRepository implements PinjamanRepository {
       .equals(nasabahId)
       .and(p => p.status === 'Aktif')
       .toArray();
+  }
+
+  async getPinjamanById(pinjamanId: number): Promise<Pinjaman | undefined> {
+    return await db.pinjaman.get(pinjamanId);
   }
 }

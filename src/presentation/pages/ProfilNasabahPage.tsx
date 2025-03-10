@@ -9,6 +9,8 @@ import { EditNasabahProfile } from "../../core/usecases/EditNasabahProfile";
 import { ProfilNasabah } from "../components/ProfilNasabah";
 // import { HistoryTransaksi } from "../components/HistoryTransaksi";
 import { ModalCatatTransaksi } from "./modalpages/ModalCatatTransaksi";
+import ToastNotification from "../components/ToastNotifications";
+import { CicilanMutationTable } from '../components/tables/CicilanMutationTable';
 
 const nasabahRepo = new NasabahRepository();
 const nasabahDetailRepo = new NasabahDetailRepository();
@@ -21,6 +23,8 @@ export const ProfilNasabahPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // State untuk modal
+  const [notificationMessage, setNotificationMessage] = useState<string>("");
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -122,6 +126,12 @@ export const ProfilNasabahPage = () => {
   return (
 
       <div className="w-full md:max-w-7xl mx-auto p-6 bg-white shadow-md rounded-lg my-10">
+        {showToast && (
+          <ToastNotification
+            message={notificationMessage}
+            onClose={() => setShowToast(false)}
+          />
+        )}
         <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">Profil Nasabah</h1>
         <Tab.Group>
           {/* Tab List */}
@@ -156,7 +166,7 @@ export const ProfilNasabahPage = () => {
               <ProfilNasabah nasabah={nasabah} detail={detail} onSave={handleSave} />
             </Tab.Panel>
             <Tab.Panel className="bg-white p-4 rounded-lg shadow">
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex flex-col justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">History Transaksi</h2>
                 <button
                   onClick={handleCatatTransaksi}
@@ -164,6 +174,10 @@ export const ProfilNasabahPage = () => {
                 >
                   + Catat Transaksi
                 </button>
+                <div className="container mx-auto p-6">
+                  <h1 className="text-2xl font-bold mb-4 text-gray-800">Mutasi Cicilan Pinjaman</h1>
+                  <CicilanMutationTable pinjamanId={1} />
+              </div>
               </div>
               {/* <HistoryTransaksi nasabahId={nasabah.id!} /> */}
             </Tab.Panel>
@@ -174,7 +188,16 @@ export const ProfilNasabahPage = () => {
         {(isModalOpen && nasabah.id) && (
           <ModalCatatTransaksi
             nasabahId={nasabah.id} // Ganti dengan ID nasabah yang sesuai
-            onClose={() => setIsModalOpen(false)}
+            namaNasabah={nasabah.nama}
+            onClose={(msg) => {
+              setIsModalOpen(false)
+
+              if (msg !== "" && msg !== undefined) {
+                setNotificationMessage(msg)
+                setShowToast(true)
+              }
+            }}
+
           />
         )}
       </div>

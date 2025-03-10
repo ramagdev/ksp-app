@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProdukPinjamanList } from "../components/tables/ProdukPinjamanList";
 import { getAllProdukPinjaman, deleteProdukPinjaman } from "../../container"; // Impor dari container.ts
-import { ProdukPinjaman } from "../../core/entities/Mutasi/ProdukPinjaman";
+import { ProdukPinjamanEntity } from "../../core/entities/Mutasi/ProdukPinjaman";
 
 export const ProdukPinjamanPage: React.FC = () => {
   const navigate = useNavigate();
-  const [produkList, setProdukList] = useState<ProdukPinjaman[]>([]);
+  const [produkList, setProdukList] = useState<ProdukPinjamanEntity[]>([]);
 
   // Ambil daftar produk saat komponen dimuat
   useEffect(() => {

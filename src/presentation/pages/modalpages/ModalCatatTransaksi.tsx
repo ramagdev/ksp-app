@@ -1,22 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tab } from "@headlessui/react";
 import { TabPinjamanBaru } from "../tabpages/TabPinjamanBaru";
-import { createNewLoan, getAllProdukPinjaman } from "../../../container";
 
 interface ModalCatatTransaksiProps {
   nasabahId: number;
-  onClose: () => void;
+  namaNasabah: string;
+  onClose: (message?: string) => void;
 }
 
-export const ModalCatatTransaksi: React.FC<ModalCatatTransaksiProps> = ({ nasabahId, onClose }) => {
+export const ModalCatatTransaksi: React.FC<ModalCatatTransaksiProps> = ({ nasabahId, namaNasabah, onClose }) => {
   const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [message, setMessage] = useState<string>("");
+
+  // Gunakan useEffect untuk memantau perubahan pada `message`
+  useEffect(() => {
+    if (message) {
+      onClose(message); // Panggil onClose hanya setelah message diperbarui
+    }
+  }, [message, onClose]);
 
   return (
     <div className="fixed inset-0 bg-black/75 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
         {/* Tanda Silang (X) */}
         <button
-          onClick={onClose}
+          onClick={() => { 
+            onClose();
+          }}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none"
         >
           <svg
@@ -36,6 +46,7 @@ export const ModalCatatTransaksi: React.FC<ModalCatatTransaksiProps> = ({ nasaba
         </button>
 
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">Catat Transaksi</h2>
+        <p className="text-sm text-gray-600 mb-4">Untuk: <span className="font-medium">{namaNasabah}</span></p>
         <Tab.Group selectedIndex={selectedTab} onChange={setSelectedTab}>
           <Tab.List className="flex space-x-2 border-b border-gray-200">
             <Tab
@@ -61,12 +72,9 @@ export const ModalCatatTransaksi: React.FC<ModalCatatTransaksiProps> = ({ nasaba
             <Tab.Panel>
               <TabPinjamanBaru
                 nasabahId={nasabahId}
-                onCreateSuccess={(pinjamanId) => {
-                  console.log("Pinjaman berhasil dibuat dengan ID:", pinjamanId);
-                  onClose();
+                onCreateSuccess={(jumlahPinjaman) => {
+                  setMessage("Berhasil mencatat pinjaman sebesar Rp." + jumlahPinjaman + " untuk " + namaNasabah);
                 }}
-                createNewLoan={createNewLoan}
-                getAllProdukPinjaman={getAllProdukPinjaman}
               />
             </Tab.Panel>
             <Tab.Panel>

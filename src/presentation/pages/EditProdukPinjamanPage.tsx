@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ProdukPinjamanForm } from '../components/forms/ProdukPinjamanForm';
 import { getProdukPinjamanById, updateProdukPinjaman } from '../../container';
-import { ProdukPinjaman } from '../../core/entities/Mutasi/ProdukPinjaman';
+import { ProdukPinjamanEntity } from '../../core/entities/Mutasi/ProdukPinjaman';
 
 export const EditProdukPinjamanPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [produk, setProduk] = useState<ProdukPinjaman | null>(null);
+  const [produk, setProduk] = useState<ProdukPinjamanEntity | null>(null);
 
   // Ambil data produk berdasarkan ID
   useEffect(() => {
@@ -20,7 +20,7 @@ export const EditProdukPinjamanPage: React.FC = () => {
     fetchProduk();
   }, [id]);
 
-  const handleSubmit = async (produk: Omit<ProdukPinjaman, 'id'>) => {
+  const handleSubmit = async (produk: Omit<ProdukPinjamanEntity, 'id'>) => {
     if (id) {
       await updateProdukPinjaman.execute(Number(id), produk); // Update produk
       navigate('/produk-pinjaman'); // Redirect ke halaman daftar produk
