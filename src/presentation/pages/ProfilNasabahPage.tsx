@@ -11,6 +11,7 @@ import { ProfilNasabah } from "../components/ProfilNasabah";
 import { ModalCatatTransaksi } from "./modalpages/ModalCatatTransaksi";
 import ToastNotification from "../components/ToastNotifications";
 import { CicilanMutationTable } from '../components/tables/CicilanMutationTable';
+import { getPinjamanIdByNasabahId } from "../../container";
 
 const nasabahRepo = new NasabahRepository();
 const nasabahDetailRepo = new NasabahDetailRepository();
@@ -20,6 +21,7 @@ export const ProfilNasabahPage = () => {
   const { id } = useParams<{ id: string }>();
   const [nasabah, setNasabah] = useState<Nasabah | null>(null);
   const [detail, setDetail] = useState<NasabahDetail | null>(null);
+  const [pinjamanId, setPinjamanId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // State untuk modal
@@ -29,17 +31,18 @@ export const ProfilNasabahPage = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+
         const nasabahId = Number(id);
         const nasabahData = await nasabahRepo.nasabah.get(nasabahId);
         const detailData = await nasabahDetailRepo.nasabahDetail
           .where("nasabahId")
           .equals(nasabahId)
           .first();
+        const pinjamanId = await getPinjamanIdByNasabahId.execute(nasabahId);
 
         if (!nasabahData) {
           throw new Error("Data nasabah tidak ditemukan");
         }
-
         setNasabah(nasabahData);
         setDetail(
           detailData || {
@@ -54,6 +57,7 @@ export const ProfilNasabahPage = () => {
             foto: null
           }
         );
+        setPinjamanId(pinjamanId || null);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Terjadi kesalahan");
       } finally {
@@ -80,10 +84,11 @@ export const ProfilNasabahPage = () => {
         .where("nasabahId")
         .equals(nasabah.id!)
         .first();
-  
+
       // Perbarui state
       setNasabah(updatedNasabah || null);
       setDetail(updatedDetail || null);
+      setPinjamanId(null);
     } else {
       setError(error);
     }
@@ -176,7 +181,7 @@ export const ProfilNasabahPage = () => {
                 </button>
                 <div className="container mx-auto p-6">
                   <h1 className="text-2xl font-bold mb-4 text-gray-800">Mutasi Cicilan Pinjaman</h1>
-                  <CicilanMutationTable pinjamanId={1} />
+                  <CicilanMutationTable pinjamanId={pinjamanId} />
               </div>
               </div>
               {/* <HistoryTransaksi nasabahId={nasabah.id!} /> */}

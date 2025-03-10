@@ -20,6 +20,8 @@ import { UpdateProdukPinjaman } from "./core/usecases/Mutasi/UpdateProdukPinjama
 import { DeleteProdukPinjaman } from "./core/usecases/Mutasi/DeleteProdukPinjaman";
 import { GetProdukPinjamanById } from "./core/usecases/Mutasi/GetProdukPinjamanById";
 
+import { GetPinjamanIdByNasabahId } from './core/usecases/Mutasi/GetPinjamanIdByNasabahId';
+
 import { CreateNewLoan } from './core/usecases/Mutasi/CreateNewLoan';
 import { GetLoanMutations } from './core/usecases/Mutasi/GetLoanMutations';
 
@@ -35,6 +37,8 @@ export const getAllProdukPinjaman = new GetAllProdukPinjaman(produkPinjamanRepos
 export const updateProdukPinjaman = new UpdateProdukPinjaman(produkPinjamanRepository);
 export const deleteProdukPinjaman = new DeleteProdukPinjaman(produkPinjamanRepository);
 export const getProdukPinjamanById = new GetProdukPinjamanById(produkPinjamanRepository);
+
+export const getPinjamanIdByNasabahId = new GetPinjamanIdByNasabahId(pinjamanRepository);
 
 export const createNewLoan = new CreateNewLoan(pinjamanRepository, transaksiRepository, cicilanRepository, produkPinjamanRepository);
 export const getLoanMutations = new GetLoanMutations(

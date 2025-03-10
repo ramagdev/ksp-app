@@ -12,7 +12,7 @@ import LoanMutation from '../../../core/entities/Mutasi/LoanMutation';
 type CicilanData = LoanMutation['cicilan'][number];
 
 interface CicilanMutationTableProps {
-  pinjamanId: number;
+  pinjamanId: number | null;
 }
 
 export const CicilanMutationTable = ({ pinjamanId }: CicilanMutationTableProps) => {
@@ -23,8 +23,10 @@ export const CicilanMutationTable = ({ pinjamanId }: CicilanMutationTableProps) 
     const fetchData = async () => {
       setLoading(true);
       try {
+        if (pinjamanId) {
         const mutation = await getLoanMutations.execute(pinjamanId);
-        setData(mutation.cicilan);
+        setData(mutation.cicilan)
+        }
       } catch (error) {
         console.error('Error fetching loan mutations:', error);
       } finally {

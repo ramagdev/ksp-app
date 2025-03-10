@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { RequiredTextInput } from '../inputs/RequiredTextInput';
 import { useNavigate } from 'react-router-dom';
-import { RupiahInput } from '../inputs/RupiahInput';
 import { ProdukPinjamanEntity } from '../../../core/entities/Mutasi/ProdukPinjaman';
 
 interface ProdukPinjamanFormProps {
@@ -15,8 +14,6 @@ interface ProdukPinjamanFormProps {
     const [banyakCicilan, setBanyakCicilan] = useState(initialData?.banyakCicilan || 1);
     const [bunga, setBunga] = useState(initialData?.bunga || 0);
     const [jenisPeminjam, setJenisPeminjam] = useState<'Perorangan' | 'Kelompok'>(initialData?.jenisPeminjam || 'Perorangan');
-    const [maksimumPinjaman, setMaksimumPinjaman] = useState(initialData?.maksimumPinjaman || 0);
-    const [minimumPinjaman, setMinimumPinjaman] = useState(initialData?.minimumPinjaman || 0);
     const [keterangan, setKeterangan] = useState(initialData?.keterangan || '');
     const [errors, setErrors] = useState<Record<string, string>>({});
     const navigate = useNavigate();
@@ -43,8 +40,6 @@ interface ProdukPinjamanFormProps {
           banyakCicilan,
           bunga,
           jenisPeminjam,
-          maksimumPinjaman,
-          minimumPinjaman,
           keterangan,
           is_active: true
         };
@@ -139,20 +134,6 @@ interface ProdukPinjamanFormProps {
                             <option value="Kelompok">Kelompok</option>
                         </select>
                     </div>
-
-                    {/* Maksimum Pinjaman */}
-                    <RupiahInput 
-                        id="maksimumPinjaman" 
-                        label="Maksimum Pinjaman(Rp)"
-                        onChange={(value) => setMaksimumPinjaman(Number(value))}
-                    />
-
-                    {/* Minimum Pinjaman */}
-                    <RupiahInput 
-                        id="minimumPinjaman" 
-                        label="Minimum Pinjaman(Rp)"
-                        onChange={(value) => setMinimumPinjaman(Number(value))}
-                    />
 
                     {/* Keterangan */}
                     <div className="col-span-2">

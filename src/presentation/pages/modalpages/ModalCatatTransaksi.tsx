@@ -17,7 +17,7 @@ export const ModalCatatTransaksi: React.FC<ModalCatatTransaksiProps> = ({ nasaba
     if (message) {
       onClose(message); // Panggil onClose hanya setelah message diperbarui
     }
-  }, [message, onClose]);
+  }, [message]);
 
   return (
     <div className="fixed inset-0 bg-black/75 flex items-center justify-center p-4">
