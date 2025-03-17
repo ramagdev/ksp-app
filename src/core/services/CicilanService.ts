@@ -22,6 +22,8 @@ export class CicilanService {
         pinjamanId,
         tanggalJatuhTempo,
         jumlahHarusDibayar,
+        kurangBayar: jumlahHarusDibayar,
+        pembayaran: [],
         status: 'Belum Bayar', // Default status
       });
     }

@@ -1,16 +1,17 @@
 // src/core/usecases/Mutasi/GetLoanMutations.ts
 import { PinjamanRepository } from '../../repositories/Mutasi/PinjamanRepository';
 import { CicilanRepository } from '../../repositories/Mutasi/CicilanRepository';
-import { TransaksiRepository } from '../../repositories/Mutasi/TransaksiRepository';
 import { ProdukPinjamanRepository } from '../../repositories/Mutasi/ProdukPinjamanRepository';
-import LoanMutation from '../../entities/Mutasi/LoanMutation';
+
+import LoanMutation from '../../entities/Mutasi/Output/LoanMutation';
+import LoanMutationRow from '../../entities/Mutasi/Output/LoanMutationRow';
+import { Pembayaran } from '../../entities/Mutasi/Pembayaran';
 
 export class GetLoanMutations {
   constructor(
     private pinjamanRepository: PinjamanRepository,
     private cicilanRepository: CicilanRepository,
-    private transaksiRepository: TransaksiRepository,
-    private produkPinjamanRepository: ProdukPinjamanRepository
+    private produkPinjamanRepository: ProdukPinjamanRepository,
   ) {}
 
   async execute(pinjamanId: number): Promise<LoanMutation> {
@@ -29,64 +30,83 @@ export class GetLoanMutations {
     }
 
     // Ambil daftar cicilan untuk pinjaman ini
-    const cicilanList = await this.cicilanRepository.getCicilanByPinjamanId(pinjamanId);
+    const cicilanList = await this.cicilanRepository.getAllCicilanByPinjamanId(pinjamanId);
 
-    // Ambil daftar transaksi pembayaran untuk pinjaman ini
-    const transaksiPembayaran = await this.transaksiRepository.getTransaksiByPinjamanId(pinjamanId);
-
-    // Urutkan cicilan berdasarkan tanggal jatuh tempo
     const sortedCicilan = [...cicilanList].sort(
       (a, b) => new Date(a.tanggalJatuhTempo).getTime() - new Date(b.tanggalJatuhTempo).getTime()
     );
 
-    // Hitung total pembayaran dari transaksi
-    let remainingPayment = transaksiPembayaran.reduce((sum, t) => sum + t.jumlahTransaksi, 0);
-    const tanggalBayarList = transaksiPembayaran.map(t => t.tanggalTransaksi);
+    const jumlahPinjaman = pinjaman.jumlahPinjaman;
+    const pinjamanBerbunga = jumlahPinjaman * (1 + produkPinjaman.bunga/100);
 
-    // Alokasi pembayaran ke cicilan
-    const enrichedCicilan = sortedCicilan.map((cicilan, index) => {
-      const pembayaran = Math.min(remainingPayment, cicilan.jumlahHarusDibayar);
-      remainingPayment -= pembayaran;
-      const kurangBayar = cicilan.jumlahHarusDibayar - pembayaran;
+    // Pemisahan transaksi dalam cicilan
+    const enrichedCicilan = sortedCicilan.map( (cicilan, index) => {
+      const cicilanId = cicilan.id ?? null;
+      if (!cicilanId) {
+        throw new Error('Cicilan tidak ditemukan');
+      }
+      const nomorCicilan = index + 1;
 
-      const isPaid = pembayaran >= cicilan.jumlahHarusDibayar;
-      const isOverdue = !isPaid && currentDate > cicilan.tanggalJatuhTempo;
-      const isLate =
-        isPaid && tanggalBayarList.some(t => t > cicilan.tanggalJatuhTempo);
-      const diffTime = currentDate.getTime() - cicilan.tanggalJatuhTempo.getTime();
-      const lcDays = isPaid || diffTime <= 0 ? 0 : Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      //Mengisi rows
+      const rows = this.getLoanMutationRows(cicilan.pembayaran);
 
-      // Tentukan status dengan tipe eksplisit
-      const status: 'Belum Bayar' | 'Dibayar' | 'Macet' | 'Terlambat' = isPaid
-        ? isLate
-          ? 'Terlambat'
-          : 'Dibayar'
-        : isOverdue
-        ? 'Macet'
-        : 'Belum Bayar';
+      const tanggalPembayaranLunas = cicilan.tanggalPembayaranLunas ?? null;
+
+      const tanggalJatuhTempo = new Date(cicilan.tanggalJatuhTempo);
+
+      const lcDay = (tanggalPembayaranLunas)
+        ? Math.ceil(( tanggalPembayaranLunas.getTime() - tanggalJatuhTempo.getTime()) / (1000 * 60 * 60 * 24))
+        : Math.ceil(( currentDate.getTime() - tanggalJatuhTempo.getTime()) / (1000 * 60 * 60 * 24));
+
+      const lcDays = lcDay > 0 ? lcDay : 0;
+
+      const statusCicilan = cicilan.status === 'Belum Bayar'
+        ? lcDays > 0 ? 'Macet' : 'Belum Bayar'
+        : cicilan.status as 'Belum Bayar' | 'Dibayar' | 'Macet' | 'Terlambat';
 
       return {
-        nomor: index + 1,
+        cicilanId,
+        nomorCicilan,
         tanggalJatuhTempo: cicilan.tanggalJatuhTempo,
         jumlahHarusDibayar: cicilan.jumlahHarusDibayar,
-        tanggalBayar: pembayaran > 0 ? [...tanggalBayarList] : [],
+        rows,
+        tanggalPembayaranLunas,
         lcDays,
-        pembayaran,
-        kurangBayar: kurangBayar < 0 ? 0 : kurangBayar,
-        status,
-        keterangan: cicilan.keterangan,
+        statusCicilan
       };
     });
 
-    // Kembalikan data mutasi untuk pinjaman ini
     return {
       pinjamanId: pinjaman.id,
-      nasabahId: pinjaman.nasabahId,
-      produkPinjamanNama: produkPinjaman.namaProduk, // Pastikan field ini sesuai
-      jumlahPinjaman: pinjaman.jumlahPinjaman,
+      pinjamanPokok: jumlahPinjaman,
+      bunga: produkPinjaman.bunga,
+      pinjamanBerbunga,
       tanggalPinjaman: pinjaman.tanggalPinjaman,
       statusPinjaman: pinjaman.status,
-      cicilan: enrichedCicilan,
+      keterangan: pinjaman.keterangan,
+      cicilan: enrichedCicilan
     };
+  }
+
+  private getLoanMutationRows(pembayaranList: Pembayaran[] | undefined): LoanMutationRow[] {
+    if (!pembayaranList) {
+      return [];
+    }
+    const rows: LoanMutationRow[] = [];
+
+    const sortedPembayaran = [...pembayaranList].sort(
+      (a, b) => new Date(a.tanggalBayar).getTime() - new Date(b.tanggalBayar).getTime()
+    )
+    sortedPembayaran.map((pembayaran) => {
+      const row: LoanMutationRow = {
+        transaksiId: pembayaran.transaksiId,
+        tanggalBayar: pembayaran.tanggalBayar,
+        jumlah: pembayaran.jumlah,
+        kurangBayar: pembayaran.kurangBayar,
+        keterangan: pembayaran.keterangan
+      }
+      rows.push(row)
+    })
+    return rows 
   }
 }

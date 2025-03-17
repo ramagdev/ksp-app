@@ -33,4 +33,19 @@ export class PinjamanIndexedDBRepository implements PinjamanRepository {
   async getPinjamanById(pinjamanId: number): Promise<Pinjaman | undefined> {
     return await db.pinjaman.get(pinjamanId);
   }
+
+  async checkPinjamanExists(pinjamanId: number): Promise<void> {
+    const pinjaman = await db.pinjaman.get(pinjamanId);
+    if (!pinjaman) {
+      throw new Error('Pinjaman tidak ditemukan');
+    }
+  }
+
+  async getAllPinjamanByNasabahId(nasabahId: number): Promise<Pinjaman[]> {
+    return await db.pinjaman.where('nasabahId').equals(nasabahId).toArray();
+  }
+
+  async deletePinjaman(pinjamanId: number): Promise<void> {
+    await db.pinjaman.delete(pinjamanId);
+  }
 }

@@ -14,16 +14,21 @@ import { CicilanRepository } from './core/repositories/Mutasi/CicilanRepository'
 import { CicilanIndexedDBRepository } from './data/repositories/IndexedDB/CicilanIndexedDBRepository';
 
 // Import use case
-import { CreateProdukPinjaman } from './core/usecases/Mutasi/CreateProdukPinjaman';
-import { GetAllProdukPinjaman } from "./core/usecases/Mutasi/GetAllProdukPinjaman";
-import { UpdateProdukPinjaman } from "./core/usecases/Mutasi/UpdateProdukPinjaman";
-import { DeleteProdukPinjaman } from "./core/usecases/Mutasi/DeleteProdukPinjaman";
-import { GetProdukPinjamanById } from "./core/usecases/Mutasi/GetProdukPinjamanById";
+import { CreateProdukPinjaman } from './core/usecases/ProdukPinjaman/CreateProdukPinjaman';
+import { GetAllProdukPinjaman } from "./core/usecases/ProdukPinjaman/GetAllProdukPinjaman";
+import { UpdateProdukPinjaman } from "./core/usecases/ProdukPinjaman/UpdateProdukPinjaman";
+import { DeleteProdukPinjaman } from "./core/usecases/ProdukPinjaman/DeleteProdukPinjaman";
+import { GetProdukPinjamanById } from "./core/usecases/ProdukPinjaman/GetProdukPinjamanById";
 
-import { GetPinjamanIdByNasabahId } from './core/usecases/Mutasi/GetPinjamanIdByNasabahId';
+import { GetPinjamanIdByNasabahId } from './core/usecases/Pinjaman/GetPinjamanIdByNasabahId';
+import { GetAllPinjamanByNasabahId } from './core/usecases/Pinjaman/GetAllPinjamanByNasabahId';
+import { HapusPinjaman } from './core/usecases/Pinjaman/HapusPinjaman';
+import { DeleteCicilanPayment } from './core/usecases/Cicilan/DeleteCicilanPayment';
 
-import { CreateNewLoan } from './core/usecases/Mutasi/CreateNewLoan';
+import { CreateNewLoan } from './core/usecases/Pinjaman/CreateNewLoan';
 import { GetLoanMutations } from './core/usecases/Mutasi/GetLoanMutations';
+
+import { CreateCicilanPayment } from './core/usecases/Cicilan/CreateCicilanPayment';
 
 // Buat instance repository
 const produkPinjamanRepository: ProdukPinjamanRepository = new ProdukPinjamanIndexedDBRepository();
@@ -39,11 +44,15 @@ export const deleteProdukPinjaman = new DeleteProdukPinjaman(produkPinjamanRepos
 export const getProdukPinjamanById = new GetProdukPinjamanById(produkPinjamanRepository);
 
 export const getPinjamanIdByNasabahId = new GetPinjamanIdByNasabahId(pinjamanRepository);
+export const getAllPinjamanByNasabahId = new GetAllPinjamanByNasabahId(pinjamanRepository);
+export const hapusPinjaman = new HapusPinjaman(pinjamanRepository, transaksiRepository, cicilanRepository);
+export const hapusPembayaran = new DeleteCicilanPayment(cicilanRepository);
 
 export const createNewLoan = new CreateNewLoan(pinjamanRepository, transaksiRepository, cicilanRepository, produkPinjamanRepository);
 export const getLoanMutations = new GetLoanMutations(
     pinjamanRepository,
     cicilanRepository,
-    transaksiRepository,
     produkPinjamanRepository
   );
+
+export const createCicilanPayment = new CreateCicilanPayment(pinjamanRepository, cicilanRepository, transaksiRepository);

@@ -29,4 +29,8 @@ export class TransaksiIndexedDBRepository implements TransaksiRepository {
       .and(t => t.jenisTransaksi === 'Pembayaran Cicilan')
       .toArray();
   }
+
+  async deleteTransaksiByPinjamanId(pinjamanId: number): Promise<void> {
+    await db.transaksi.where('pinjamanId').equals(pinjamanId).delete();
+  }
 }

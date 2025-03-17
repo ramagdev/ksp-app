@@ -5,6 +5,7 @@ export class GetPinjamanIdByNasabahId {
     async execute(nasabahId: number): Promise<number| null> {
         const pinjaman = await this.pinjamanRepository.getPinjamanAktifByNasabahId(nasabahId);
         if (pinjaman.length === 0) return null;
-        return pinjaman[0].id || null;
+        const last = pinjaman[pinjaman.length - 1].id;
+        return last || null;
     }
 }

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Tab } from "@headlessui/react";
 import { TabPinjamanBaru } from "../tabpages/TabPinjamanBaru";
+import { TabBayarCicilan } from "../tabpages/TabBayarCicilan";
+import { getPinjamanIdByNasabahId } from "../../../container";
 
 interface ModalCatatTransaksiProps {
   nasabahId: number;
@@ -8,16 +10,52 @@ interface ModalCatatTransaksiProps {
   onClose: (message?: string) => void;
 }
 
-export const ModalCatatTransaksi: React.FC<ModalCatatTransaksiProps> = ({ nasabahId, namaNasabah, onClose }) => {
+export const ModalCatatTransaksi: React.FC<ModalCatatTransaksiProps> = ({ 
+  nasabahId, 
+  namaNasabah, 
+  onClose 
+}) => {
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [message, setMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [pinjamanId, setPinjamanId] = useState<number | null>(null);
 
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const pinjamanId = await getPinjamanIdByNasabahId.execute(nasabahId);
+        if (pinjamanId) {
+          setSelectedTab(1);
+          setPinjamanId(pinjamanId);
+        } else {
+          setSelectedTab(0);
+        }
+      } catch (error) {
+        setError("Terjadi kesalahan saat memuat data.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadData();
+
+  }, [nasabahId]);
+  
   // Gunakan useEffect untuk memantau perubahan pada `message`
   useEffect(() => {
     if (message) {
       onClose(message); // Panggil onClose hanya setelah message diperbarui
     }
   }, [message]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black/75 flex items-center justify-center p-4">
@@ -78,8 +116,13 @@ export const ModalCatatTransaksi: React.FC<ModalCatatTransaksiProps> = ({ nasaba
               />
             </Tab.Panel>
             <Tab.Panel>
-              {/* Tambahkan komponen untuk Bayar Cicilan di sini */}
-              <div className="text-gray-700">Fitur Bayar Cicilan akan segera hadir.</div>
+              <TabBayarCicilan
+                pinjamanId={pinjamanId}
+                onPaymentSuccess={(jumlahPembayaran) => {
+                  setMessage("Berhasil mencatat pembayaran sebesar Rp." + jumlahPembayaran + " untuk " + namaNasabah);
+                }}
+              />
+              {error && <p className="text-red-500 mt-2">{error}</p>}
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>

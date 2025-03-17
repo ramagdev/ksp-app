@@ -5,7 +5,7 @@ import { getAllProdukPinjaman, createNewLoan } from "../../../container";
 
 interface TabPinjamanBaruProps {
   nasabahId: number;
-  onCreateSuccess: (pinjamanId: number) => void;
+  onCreateSuccess: (jumlahPinjaman: number) => void;
 }
 
 export const TabPinjamanBaru: React.FC<TabPinjamanBaruProps> = ({

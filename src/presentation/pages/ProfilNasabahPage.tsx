@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Tab } from "@headlessui/react";
-import { Nasabah} from "../../core/entities/Nasabah";
+import { Nasabah } from "../../core/entities/Nasabah";
 import { NasabahDetail } from "../../core/entities/NasabahDetail";
 import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexedDB/NasabahRepository";
 import { NasabahDetailIndexedDBRepository as NasabahDetailRepository } from "../../data/repositories/IndexedDB/NasabahDetailRepository";
 import { EditNasabahProfile } from "../../core/usecases/EditNasabahProfile";
 import { ProfilNasabah } from "../components/ProfilNasabah";
-// import { HistoryTransaksi } from "../components/HistoryTransaksi";
 import { ModalCatatTransaksi } from "./modalpages/ModalCatatTransaksi";
 import ToastNotification from "../components/ToastNotifications";
-import { CicilanMutationTable } from '../components/tables/CicilanMutationTable';
-import { getPinjamanIdByNasabahId } from "../../container";
+import RiwayatMutasi from "../components/RiwayatMutasi";
 
 const nasabahRepo = new NasabahRepository();
 const nasabahDetailRepo = new NasabahDetailRepository();
@@ -21,24 +19,22 @@ export const ProfilNasabahPage = () => {
   const { id } = useParams<{ id: string }>();
   const [nasabah, setNasabah] = useState<Nasabah | null>(null);
   const [detail, setDetail] = useState<NasabahDetail | null>(null);
-  const [pinjamanId, setPinjamanId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State untuk modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState<string>("");
   const [showToast, setShowToast] = useState(false);
+  const [renderCounter, setRenderCounter] = useState(0);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-
         const nasabahId = Number(id);
         const nasabahData = await nasabahRepo.nasabah.get(nasabahId);
         const detailData = await nasabahDetailRepo.nasabahDetail
           .where("nasabahId")
           .equals(nasabahId)
           .first();
-        const pinjamanId = await getPinjamanIdByNasabahId.execute(nasabahId);
 
         if (!nasabahData) {
           throw new Error("Data nasabah tidak ditemukan");
@@ -54,10 +50,9 @@ export const ProfilNasabahPage = () => {
             namaPenjamin: "",
             hubunganPenjamin: "Anak",
             teleponPenjamin: "",
-            foto: null
+            foto: null,
           }
-        );
-        setPinjamanId(pinjamanId || null);
+        )
       } catch (err) {
         setError(err instanceof Error ? err.message : "Terjadi kesalahan");
       } finally {
@@ -70,32 +65,38 @@ export const ProfilNasabahPage = () => {
 
   const handleSave = async (field: string, value: any) => {
     if (!nasabah) return;
-    console.log(field, value);
+
     const { success, error } = await editProfileUseCase.execute(
       nasabah.id!,
       field,
       value
     );
-  
+
     if (success) {
-      // Ambil ulang data nasabah dan detail dari IndexedDB
       const updatedNasabah = await nasabahRepo.nasabah.get(nasabah.id!);
       const updatedDetail = await nasabahDetailRepo.nasabahDetail
         .where("nasabahId")
         .equals(nasabah.id!)
         .first();
 
-      // Perbarui state
       setNasabah(updatedNasabah || null);
       setDetail(updatedDetail || null);
-      setPinjamanId(null);
+
     } else {
       setError(error);
     }
   };
 
   const handleCatatTransaksi = () => {
-    setIsModalOpen(true); // Buka modal
+    setIsModalOpen(true);
+  };
+
+  const handleDataChange = async () => {
+    setRenderCounter((prevCounter) => prevCounter + 1);
+
+    // if (nasabah) {
+    //   await fetchPinjamanId(nasabah.id!); // Fetch ulang pinjamanId
+    // }
   };
 
   if (isLoading) {
@@ -129,83 +130,82 @@ export const ProfilNasabahPage = () => {
   }
 
   return (
-
-      <div className="w-full md:max-w-7xl mx-auto p-6 bg-white shadow-md rounded-lg my-10">
-        {showToast && (
-          <ToastNotification
-            message={notificationMessage}
-            onClose={() => setShowToast(false)}
-          />
-        )}
-        <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">Profil Nasabah</h1>
-        <Tab.Group>
-          {/* Tab List */}
-          <Tab.List className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
-            <Tab
-              className={({ selected }) =>
-                `w-full py-2.5 text-sm font-medium rounded-lg ${
-                  selected
-                    ? "bg-white shadow text-blue-600"
-                    : "text-gray-600 hover:bg-gray-200"
-                }`
-              }
-            >
-              Informasi Profil
-            </Tab>
-            <Tab
-              className={({ selected }) =>
-                `w-full py-2.5 text-sm font-medium rounded-lg ${
-                  selected
-                    ? "bg-white shadow text-blue-600"
-                    : "text-gray-600 hover:bg-gray-200"
-                }`
-              }
-            >
-              History Transaksi
-            </Tab>
-          </Tab.List>
-
-          {/* Tab Panels */}
-          <Tab.Panels className="mt-4">
-            <Tab.Panel className="bg-white p-4 rounded-lg shadow">
-              <ProfilNasabah nasabah={nasabah} detail={detail} onSave={handleSave} />
-            </Tab.Panel>
-            <Tab.Panel className="bg-white p-4 rounded-lg shadow">
-              <div className="flex flex-col justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">History Transaksi</h2>
+    <div className="w-full md:max-w-7xl mx-auto p-6 bg-white shadow-md rounded-lg my-10">
+      {showToast && (
+        <ToastNotification
+          message={notificationMessage}
+          onClose={() => setShowToast(false)}
+        />
+      )}
+      <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">Profil Nasabah</h1>
+      <Tab.Group>
+        <Tab.List className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+          <Tab
+            className={({ selected }) =>
+              `w-full py-2.5 text-sm font-medium rounded-lg ${
+                selected
+                  ? "bg-white shadow text-blue-600"
+                  : "text-gray-600 hover:bg-gray-200"
+              }`
+            }
+          >
+            Informasi Profil
+          </Tab>
+          <Tab
+            className={({ selected }) =>
+              `w-full py-2.5 text-sm font-medium rounded-lg ${
+                selected
+                  ? "bg-white shadow text-blue-600"
+                  : "text-gray-600 hover:bg-gray-200"
+              }`
+            }
+          >
+            History Transaksi
+          </Tab>
+        </Tab.List>
+        <Tab.Panels className="mt-4">
+          <Tab.Panel className="bg-white p-4 rounded-lg shadow">
+            <ProfilNasabah nasabah={nasabah} detail={detail} onSave={handleSave} />
+          </Tab.Panel>
+          <Tab.Panel className="bg-white p-4 rounded-lg shadow">
+            <div className="flex-col justify-between items-center">
+              <div className="flex justify-end items-center mb-4">
                 <button
                   onClick={handleCatatTransaksi}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                  className="bg-blue-500 text-white mr-5 px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
                 >
                   + Catat Transaksi
                 </button>
-                <div className="container mx-auto p-6">
-                  <h1 className="text-2xl font-bold mb-4 text-gray-800">Mutasi Cicilan Pinjaman</h1>
-                  <CicilanMutationTable pinjamanId={pinjamanId} />
               </div>
-              </div>
-              {/* <HistoryTransaksi nasabahId={nasabah.id!} /> */}
-            </Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
+              {nasabah.id && (
+                <RiwayatMutasi nasabahId={nasabah.id} renderCounter={renderCounter} 
+                onDelete={async (msg) => {
+                  if (msg !== "" && msg !== undefined) {
+                    setNotificationMessage(msg);
+                    setShowToast(true);
+                  }
+                }}
+                />
+              )}
+            </div>
+          </Tab.Panel>
+        </Tab.Panels>
+      </Tab.Group>
+      {isModalOpen && nasabah.id && (
+        <ModalCatatTransaksi
+          nasabahId={nasabah.id}
+          namaNasabah={nasabah.nama}
+          onClose={async (msg) => {
+            await handleDataChange(); // Panggil handleDataChange
+            setIsModalOpen(false);
 
-        {/* Modal Catat Transaksi */}
-        {(isModalOpen && nasabah.id) && (
-          <ModalCatatTransaksi
-            nasabahId={nasabah.id} // Ganti dengan ID nasabah yang sesuai
-            namaNasabah={nasabah.nama}
-            onClose={(msg) => {
-              setIsModalOpen(false)
-
-              if (msg !== "" && msg !== undefined) {
-                setNotificationMessage(msg)
-                setShowToast(true)
-              }
-            }}
-
-          />
-        )}
-      </div>
-
+            if (msg !== "" && msg !== undefined) {
+              setNotificationMessage(msg);
+              setShowToast(true);
+            }
+          }}
+        />
+      )}
+    </div>
   );
 };
