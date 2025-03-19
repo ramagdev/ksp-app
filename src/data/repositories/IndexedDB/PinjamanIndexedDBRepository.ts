@@ -8,7 +8,7 @@ class KoperasiDB extends Dexie {
 
   constructor() {
     super('KoperasiDB');
-    this.version(23).stores({
+    this.version(234).stores({
       pinjaman: '++id, nasabahId, produkPinjamanId, tanggalPinjaman, jumlahPinjaman, status, keterangan',
     });
     this.pinjaman = this.table('pinjaman');
