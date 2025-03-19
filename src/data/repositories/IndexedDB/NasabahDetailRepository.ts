@@ -10,7 +10,7 @@ export class NasabahDetailIndexedDBRepository extends Dexie implements NasabahDe
     super("KoperasiDB");
     this.version(1).stores({
       nasabahDetail:
-        "++id, nasabahId, tanggalLahir, pekerjaanUsaha, statusPerkawinan, namaPasangan, namaPenjamin, hubunganPenjamin, teleponPenjamin, foto",
+        "++id, nasabahId, tanggalLahir, pekerjaanUsaha, statusPerkawinan, namaPasangan, namaPenjamin, hubunganPenjamin, teleponPenjamin",
     });
     this.nasabahDetail = this.table("nasabahDetail");
     this.initData();
@@ -54,7 +54,6 @@ export class NasabahDetailIndexedDBRepository extends Dexie implements NasabahDe
         namaPenjamin: "",
         hubunganPenjamin: "Saudara",
         teleponPenjamin: "",
-        foto: null,
         ...initialData,
       };
       await this.nasabahDetail.add(newDetail);

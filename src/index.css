@@ -204,3 +204,21 @@ h6 {
 .animate-fade-out {
   animation: fade-out 0.4s ease-out;
 }
+
+/* Animasi flip in */
+@keyframes flip-in {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+
+.flip-in {
+  animation: flip-in 1.2s ease-in-out;
+}
+  

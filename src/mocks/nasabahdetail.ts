@@ -11,6 +11,5 @@ export const nasabahDetailList: NasabahDetail[] = [
         namaPenjamin: "Nama Penjamin",
         hubunganPenjamin: "Orang Tua",
         teleponPenjamin: "08123456789",
-        foto: null,
     },
 ]

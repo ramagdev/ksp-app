@@ -35,7 +35,6 @@ export const ProfilNasabahPage = () => {
           .where("nasabahId")
           .equals(nasabahId)
           .first();
-
         if (!nasabahData) {
           throw new Error("Data nasabah tidak ditemukan");
         }
@@ -50,7 +49,6 @@ export const ProfilNasabahPage = () => {
             namaPenjamin: "",
             hubunganPenjamin: "Anak",
             teleponPenjamin: "",
-            foto: null,
           }
         )
       } catch (err) {
@@ -139,13 +137,13 @@ export const ProfilNasabahPage = () => {
       )}
       <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">Profil Nasabah</h1>
       <Tab.Group>
-        <Tab.List className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+        <Tab.List className="flex space-x-1 bg-gray-100 p-1 pb-0 rounded-lg ">
           <Tab
             className={({ selected }) =>
               `w-full py-2.5 text-sm font-medium rounded-lg ${
                 selected
                   ? "bg-white shadow text-blue-600"
-                  : "text-gray-600 hover:bg-gray-200"
+                  : "text-gray-600 bg-gray-100 hover:bg-blue-50 hover:border hover:border-blue-300 shadow"
               }`
             }
           >
@@ -155,8 +153,8 @@ export const ProfilNasabahPage = () => {
             className={({ selected }) =>
               `w-full py-2.5 text-sm font-medium rounded-lg ${
                 selected
-                  ? "bg-white shadow text-blue-600"
-                  : "text-gray-600 hover:bg-gray-200"
+                  ? "bg-white shadow text-blue-600 "
+                  : "text-gray-600 bg-gray-100 hover:bg-blue-50 hover:border hover:border-blue-300 shadow"
               }`
             }
           >
@@ -164,7 +162,7 @@ export const ProfilNasabahPage = () => {
           </Tab>
         </Tab.List>
         <Tab.Panels className="mt-4">
-          <Tab.Panel className="bg-white p-4 rounded-lg shadow">
+          <Tab.Panel className="bg-white">
             <ProfilNasabah nasabah={nasabah} detail={detail} onSave={handleSave} />
           </Tab.Panel>
           <Tab.Panel className="bg-white p-4 rounded-lg shadow">

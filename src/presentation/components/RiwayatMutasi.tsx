@@ -4,6 +4,7 @@ import PinjamanMutationTable from "./tables/PinjamanMutationTable";
 import { getAllPinjamanByNasabahId } from "../../container";
 import { Pinjaman } from "../../core/entities/Mutasi/Pinjaman";
 
+
 interface RiwayatMutasiProps {
   nasabahId: number;
   renderCounter: number;
@@ -44,6 +45,10 @@ const RiwayatMutasi = ({ nasabahId, renderCounter, onDelete }: RiwayatMutasiProp
   }, [nasabahId, renderCounter]);
 
   // Fungsi untuk toggle collapse/expand
+  useEffect(() => {
+    setOpenTableId(pinjamanList[0]?.id || null);
+  }, [pinjamanList]);
+
   const toggleTable = (id: number) => {
     setOpenTableId((prevId) => (prevId === id ? null : id));
   };

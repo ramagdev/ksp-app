@@ -13,6 +13,8 @@ import { TransaksiIndexedDBRepository } from './data/repositories/IndexedDB/Tran
 import { CicilanRepository } from './core/repositories/Mutasi/CicilanRepository';
 import { CicilanIndexedDBRepository } from './data/repositories/IndexedDB/CicilanIndexedDBRepository';
 
+import { PhotoRepository } from './core/repositories/PhotoRepository';
+import { PhotoIndexedDBRepository } from './data/repositories/IndexedDB/PhotoIndexedDBRepository';
 // Import use case
 import { CreateProdukPinjaman } from './core/usecases/ProdukPinjaman/CreateProdukPinjaman';
 import { GetAllProdukPinjaman } from "./core/usecases/ProdukPinjaman/GetAllProdukPinjaman";
@@ -30,11 +32,15 @@ import { GetLoanMutations } from './core/usecases/Mutasi/GetLoanMutations';
 
 import { CreateCicilanPayment } from './core/usecases/Cicilan/CreateCicilanPayment';
 
+import { UploadPhoto } from './core/usecases/Customer/UploadPhoto';
+import { GetPhotoUrl } from './core/usecases/Customer/GetPhotoUrl';
+
 // Buat instance repository
 const produkPinjamanRepository: ProdukPinjamanRepository = new ProdukPinjamanIndexedDBRepository();
 const pinjamanRepository: PinjamanRepository = new PinjamanIndexedDBRepository();
 const transaksiRepository: TransaksiRepository = new TransaksiIndexedDBRepository();
 const cicilanRepository: CicilanRepository = new CicilanIndexedDBRepository();
+const customerPhotoRepository: PhotoRepository = new PhotoIndexedDBRepository();
 
 // Buat instance use case dengan dependency yang diperlukan
 export const createProdukPinjaman = new CreateProdukPinjaman(produkPinjamanRepository);
@@ -56,3 +62,6 @@ export const getLoanMutations = new GetLoanMutations(
   );
 
 export const createCicilanPayment = new CreateCicilanPayment(pinjamanRepository, cicilanRepository, transaksiRepository);
+
+export const uploadPhoto = new UploadPhoto(customerPhotoRepository);
+export const getPhotoUrl = new GetPhotoUrl(customerPhotoRepository);

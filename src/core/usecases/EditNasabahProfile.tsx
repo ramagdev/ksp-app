@@ -47,7 +47,6 @@ export class EditNasabahProfile {
             namaPenjamin: "",
             hubunganPenjamin: "Saudara",
             teleponPenjamin: "",
-            foto: null,
             ...updates, // Tambahkan field yang diubah
           };
           await this.nasabahDetailRepo.nasabahDetail.add(newDetail);

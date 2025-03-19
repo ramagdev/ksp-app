@@ -1,8 +1,9 @@
 import { Nasabah } from "../../core/entities/Nasabah";
 import { useNavigate } from "react-router-dom"; // Tambahkan useNavigate
 import { PlusIcon } from "@heroicons/react/24/outline"; // Tambahkan PlusIcon
-// import { useState } from "react";
-// import { ModalTambahTransaksi } from "./ModalTambahTransaksi"; // Import komponen modal
+import { useState } from "react";
+import { ModalCatatTransaksi } from "../pages/modalpages/ModalCatatTransaksi"; // Import komponen modal
+import ToastNotification from "../components/ToastNotifications";
 
 interface NasabahListProps {
   nasabahList: Nasabah[];
@@ -11,22 +12,24 @@ interface NasabahListProps {
 }
 
 export default function NasabahList({ nasabahList, isLoading, error }: NasabahListProps) {
-  // const [isModalOpen, setIsModalOpen] = useState(false); // State untuk modal
-  // const [selectedNasabahId, setSelectedNasabahId] = useState<number | null>(null); // State untuk menyimpan ID nasabah yang dipilih
-  // const [selectedNasabahName, setSelectedNasabahName] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false); // State untuk modal
+  const [selectedNasabahId, setSelectedNasabahId] = useState<number | null>(null); // State untuk menyimpan ID nasabah yang dipilih
+  const [selectedNasabahName, setSelectedNasabahName] = useState<string>("");
+  const [notificationMessage, setNotificationMessage] = useState<string>("");
+  const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate(); // Hook untuk navigasi
 
-  // const handleOpenModal = (nasabahId: number, namaNasabah: string) => {
+  const handleOpenModal = (nasabahId: number, namaNasabah: string) => {
   
-  //   setSelectedNasabahId(nasabahId);
-  //   setSelectedNasabahName(namaNasabah);
-  //   setIsModalOpen(true);
-  // };
+    setSelectedNasabahId(nasabahId);
+    setSelectedNasabahName(namaNasabah);
+    setIsModalOpen(true);
+  };
 
-  // const handleCloseModal = () => {
-  //   setIsModalOpen(false);
-  //   setSelectedNasabahId(null);
-  // };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedNasabahId(null);
+  };
 
   const handleRowClick = (nasabahId: number) => {
     navigate(`/nasabah/${nasabahId}`); // Navigasi ke halaman profil nasabah
@@ -51,6 +54,12 @@ export default function NasabahList({ nasabahList, isLoading, error }: NasabahLi
 
   return (
     <div className="nasabah-list max-w-8xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">  
+      {showToast && (
+        <ToastNotification
+          message={notificationMessage}
+          onClose={() => setShowToast(false)}
+        />
+      )}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-100">
@@ -114,7 +123,7 @@ export default function NasabahList({ nasabahList, isLoading, error }: NasabahLi
                       onClick={(e) => {
                         e.stopPropagation(); // Mencegah event bubbling ke <tr>
                         if (nasabah.id !== undefined) {
-                          // handleOpenModal(nasabah.id, nasabah.nama);
+                          handleOpenModal(nasabah.id, nasabah.nama);
                         }
                       }}
                       className="p-2 bg-blue-500 text-white rounded-full cursor-pointer hover:bg-green-500 transition-colors"
@@ -133,14 +142,20 @@ export default function NasabahList({ nasabahList, isLoading, error }: NasabahLi
         </div>
       )}
 
-      {/* Modal Tambah Transaksi */}
-      {/* {isModalOpen && selectedNasabahId && (
-        <ModalTambahTransaksi
-        nasabahId={selectedNasabahId}
-        namaNasabah={selectedNasabahName} // Ganti dengan nama nasabah yang sesuai
-        onClose={handleCloseModal}
+      {/* Modal Catat Transaksi */}
+      {isModalOpen && selectedNasabahId && (
+        <ModalCatatTransaksi
+          nasabahId={selectedNasabahId}
+          namaNasabah={selectedNasabahName} // Ganti dengan nama nasabah yang sesuai
+          onClose={async (msg) => {
+            if (msg !== "" && msg !== undefined) {
+              setNotificationMessage(msg);
+              setShowToast(true);
+            }
+            handleCloseModal()}
+          }
         />
-      )} */}
+      )}
     </div>
   );
 }

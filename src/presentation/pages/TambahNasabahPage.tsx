@@ -1,8 +1,11 @@
+// src/pages/TambahNasabahPage.tsx
 import { useState } from "react";
 import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexedDB/NasabahRepository";
 import { NasabahDetailIndexedDBRepository as NasabahDetailRepository } from "../../data/repositories/IndexedDB/NasabahDetailRepository";
 import { useNavigate } from "react-router-dom";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { FotoInput } from "../components/inputs/FotoInput";
+import { uploadPhoto } from "../../container";
 
 const nasabahRepo = new NasabahRepository();
 const nasabahDetailRepo = new NasabahDetailRepository();
@@ -21,8 +24,10 @@ export const TambahNasabahPage = () => {
   const [namaPenjamin, setNamaPenjamin] = useState("");
   const [hubunganPenjamin, setHubunganPenjamin] = useState<"Anak" | "Orang Tua" | "Saudara" | "Lainnya">("Saudara");
   const [teleponPenjamin, setTeleponPenjamin] = useState("");
-  const [foto, setFoto] = useState<File | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -33,7 +38,6 @@ export const TambahNasabahPage = () => {
     if (!nik.trim()) newErrors.nik = "NIK harus diisi.";
     if (!alamat.trim()) newErrors.alamat = "Alamat harus diisi.";
     if (!kodeMarketing.trim()) newErrors.kodeMarketing = "Kode Marketing harus diisi.";
-
     return newErrors;
   };
 
@@ -47,9 +51,17 @@ export const TambahNasabahPage = () => {
     }
 
     try {
-      const nasabahId = await nasabahRepo.nasabah.add({ noKta, nama, 
+      // Simpan data nasabah utama
+      const nasabahId = await nasabahRepo.nasabah.add({
+        noKta,
+        nama,
         telepon: telepon.replace(/[^0-9]/g, ""),
-        nik, alamat, kodeMarketing });
+        nik,
+        alamat,
+        kodeMarketing,
+      });
+
+      // Simpan data detail
       await nasabahDetailRepo.nasabahDetail.add({
         nasabahId,
         tanggalLahir,
@@ -59,9 +71,31 @@ export const TambahNasabahPage = () => {
         namaPenjamin,
         hubunganPenjamin,
         teleponPenjamin: teleponPenjamin.replace(/[^0-9]/g, ""),
-        foto,
       });
-      navigate("/home");
+
+      // Upload foto jika ada
+      if (selectedPhoto) {
+        try {
+          setIsUploadingPhoto(true);
+          const photoUrl = await uploadPhoto.execute(nasabahId, selectedPhoto, {
+            maxWidth: 800,
+            maxHeight: 600,
+          });
+          if (!photoUrl) {
+            setUploadError("Foto gagal diupload, tetapi data nasabah tersimpan.");
+          }
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : "Unknown error";
+          setUploadError(`Data nasabah berhasil disimpan, tetapi gagal upload foto: ${errorMessage}`);
+        } finally {
+          setIsUploadingPhoto(false);
+        }
+      }
+
+      // Navigasi hanya jika tidak ada error kritis
+      if (!uploadError || !selectedPhoto) {
+        navigate("/home");
+      }
     } catch (err) {
       setErrors({ general: "Gagal menambahkan nasabah. Silakan coba lagi." });
     }
@@ -73,8 +107,8 @@ export const TambahNasabahPage = () => {
         <h1 className="text-3xl font-semibold text-gray-700 mb-6 text-center">Tambah Nasabah</h1>
 
         <form noValidate onSubmit={handleSubmit} className="flex justify-center flex-wrap gap-7 gap-x-10">
-        
-          <div className="w-full md:w-1/3 ">
+          {/* Field Nama */}
+          <div className="w-full md:w-1/3">
             <label htmlFor="nama" className="block text-sm font-medium text-gray-700">
               Nama
             </label>
@@ -84,15 +118,16 @@ export const TambahNasabahPage = () => {
               value={nama}
               onChange={(e) => setNama(e.target.value)}
               placeholder="Nama"
-              required            
+              required
               className="peer invalid:border-red-500 invalid:focus:ring-red-500 valid:border-green-500 valid:focus:ring-green-500 p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2"
             />
             <div className="pointer-events-none opacity-0 peer-valid:opacity-100 -translate-y-7 justify-end flex mr-3">
-              <CheckCircleIcon className="h-5 w-5 text-green-500"/>
+              <CheckCircleIcon className="h-5 w-5 text-green-500" />
             </div>
             {errors.nama && <p className="text-red-500 text-sm mt-1">{errors.nama}</p>}
           </div>
-          
+
+          {/* Field NIK */}
           <div className="w-full md:w-1/3">
             <label htmlFor="nik" className="block text-sm font-medium text-gray-700">
               NIK
@@ -113,6 +148,7 @@ export const TambahNasabahPage = () => {
             {errors.nik && <p className="text-red-500 text-sm mt-1">{errors.nik || "NIK harus 16 digit angka"}</p>}
           </div>
 
+          {/* Field No KTA */}
           <div className="w-full md:w-1/3">
             <label htmlFor="noKta" className="block text-sm font-medium text-gray-700">
               No.KTA
@@ -132,6 +168,7 @@ export const TambahNasabahPage = () => {
             {errors.noKta && <p className="text-red-500 text-sm mt-1">{errors.noKta}</p>}
           </div>
 
+          {/* Field Telepon */}
           <div className="w-full md:w-1/3">
             <label htmlFor="telepon" className="block text-sm font-medium text-gray-700">
               Telepon
@@ -139,7 +176,7 @@ export const TambahNasabahPage = () => {
             <input
               type="text"
               id="telepon"
-              value={telepon} 
+              value={telepon}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D+/g, "");
                 const result = [];
@@ -158,6 +195,7 @@ export const TambahNasabahPage = () => {
             {errors.telepon && <p className="text-red-500 text-sm mt-1">{errors.telepon}</p>}
           </div>
 
+          {/* Field Alamat */}
           <div className="w-full md:w-1/3">
             <label htmlFor="alamat" className="block text-sm font-medium text-gray-700">
               Alamat
@@ -176,13 +214,15 @@ export const TambahNasabahPage = () => {
             </div>
             {errors.alamat && <p className="text-red-500 text-sm mt-1">{errors.alamat}</p>}
           </div>
+
+          {/* Field Kode Marketing */}
           <div className="w-full md:w-1/3">
-            <label htmlFor="kodeMarketingarketing" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="kodeMarketing" className="block text-sm font-medium text-gray-700">
               Kode Marketing
             </label>
             <input
               type="text"
-              id="kodeMarketingarketing"
+              id="kodeMarketing"
               value={kodeMarketing}
               onChange={(e) => setKodeMarketing(e.target.value)}
               placeholder="Kode Marketing"
@@ -195,7 +235,7 @@ export const TambahNasabahPage = () => {
             {errors.kodeMarketing && <p className="text-red-500 text-sm mt-1">{errors.kodeMarketing}</p>}
           </div>
 
-          {/* Field lainnya */}
+          {/* Field Tanggal Lahir */}
           <div className="w-full md:w-1/3">
             <label htmlFor="tanggalLahir" className="block text-sm font-medium text-gray-700">
               Tanggal Lahir
@@ -209,19 +249,23 @@ export const TambahNasabahPage = () => {
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
+          {/* Field Pekerjaan */}
           <div className="w-full md:w-1/3">
             <label htmlFor="pekerjaanUsaha" className="block text-sm font-medium text-gray-700">
-              Pekerjaan/ Usaha
+              Pekerjaan/Usaha
             </label>
             <input
               type="text"
               id="pekerjaanUsaha"
               value={pekerjaanUsaha}
               onChange={(e) => setPekerjaan(e.target.value)}
-              placeholder="Pekerjaan/ Usaha"
+              placeholder="Pekerjaan/Usaha"
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
+          {/* Field Status Perkawinan */}
           <div className="w-full md:w-1/3">
             <label htmlFor="statusPerkawinan" className="block text-sm font-medium text-gray-700">
               Status Perkawinan
@@ -229,7 +273,7 @@ export const TambahNasabahPage = () => {
             <select
               id="statusPerkawinan"
               value={statusPerkawinan}
-              onChange={(e) => setStatusPerkawinan(e.target.value as 'Belum Menikah' | 'Menikah' | 'Duda' | 'Janda')}
+              onChange={(e) => setStatusPerkawinan(e.target.value as "Belum Menikah" | "Menikah" | "Duda" | "Janda")}
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="Belum Menikah">Belum Menikah</option>
@@ -238,6 +282,8 @@ export const TambahNasabahPage = () => {
               <option value="Janda">Janda</option>
             </select>
           </div>
+
+          {/* Field Nama Pasangan */}
           <div className="w-full md:w-1/3">
             <label htmlFor="namaPasangan" className="block text-sm font-medium text-gray-700">
               Nama Pasangan
@@ -251,6 +297,8 @@ export const TambahNasabahPage = () => {
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
+          {/* Field Nama Penjamin */}
           <div className="w-full md:w-1/3">
             <label htmlFor="namaPenjamin" className="block text-sm font-medium text-gray-700">
               Nama Penjamin
@@ -264,14 +312,16 @@ export const TambahNasabahPage = () => {
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
+          {/* Field Hubungan Penjamin */}
           <div className="w-full md:w-1/3">
-          <label htmlFor="hubunganPenjamin" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="hubunganPenjamin" className="block text-sm font-medium text-gray-700">
               Hubungan Penjamin
             </label>
             <select
               id="hubunganPenjamin"
               value={hubunganPenjamin}
-              onChange={(e) => setHubunganPenjamin(e.target.value as 'Anak' | 'Orang Tua' | 'Saudara' | 'Lainnya')}
+              onChange={(e) => setHubunganPenjamin(e.target.value as "Anak" | "Orang Tua" | "Saudara" | "Lainnya")}
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="Anak">Anak</option>
@@ -280,6 +330,8 @@ export const TambahNasabahPage = () => {
               <option value="Lainnya">Lainnya</option>
             </select>
           </div>
+
+          {/* Field Telepon Penjamin */}
           <div className="w-full md:w-1/3">
             <label htmlFor="teleponPenjamin" className="block text-sm font-medium text-gray-700">
               Telepon Penjamin
@@ -300,55 +352,28 @@ export const TambahNasabahPage = () => {
               className="p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <div className="w-full md:w-1/3">
-            <label htmlFor="foto" className="px-11 block text-sm font-medium text-gray-700">
-              Foto
-            </label>
-            <div className="flex items-center justify-center pt-2 pb-2">
-              <label
-                htmlFor="foto"
-                className="w-60 h-80 flex flex-col justify-center items-center p-4 text-gray-500 border-2 border-dashed rounded-lg cursor-pointer"
-              >
-                <svg
-                  className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 16"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round" // Diubah ke camelCase
-                    strokeLinejoin="round" // Diubah ke camelCase
-                    strokeWidth="2" // Diubah ke camelCase
-                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                  />
-                </svg>
-                <p className="mb-2 text-m">Upload file photo</p>
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-semibold">Klik untuk upload</span>
-                </p>
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                  atau
-                </p>
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                  drag and drop
-                </p>
 
-                <input
-                  type="file"
-                  id="foto"
-                  onChange={(e) => setFoto(e.target.files?.[0] || null)}
-                  className="hidden"
-                  accept="image/*"
-                />
-              </label>
+          {/* Foto Input */}
+          <FotoInput onFileSelected={setSelectedPhoto} />
+
+          {/* Pesan Error atau Status */}
+          {uploadError && (
+            <div className="mt-4 p-3 bg-yellow-100 text-yellow-800 rounded w-full">
+              {uploadError}
             </div>
-          </div>
+          )}
+          {isUploadingPhoto && (
+            <div className="mt-4 p-3 bg-blue-100 text-blue-800 rounded w-full">
+              Mengupload foto...
+            </div>
+          )}
+
+          {/* Tombol Submit */}
           <div className="w-full flex justify-center mt-4">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+              disabled={isUploadingPhoto}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg disabled:bg-gray-400"
             >
               Simpan
             </button>

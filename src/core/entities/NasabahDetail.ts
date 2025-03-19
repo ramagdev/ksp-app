@@ -8,5 +8,4 @@ export interface NasabahDetail {
     namaPenjamin: string;
     hubunganPenjamin: 'Anak' | 'Orang Tua' | 'Saudara'| 'Lainnya';
     teleponPenjamin: string | null;
-    foto: File | null;
 }
