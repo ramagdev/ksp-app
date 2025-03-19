@@ -9,7 +9,7 @@ export class CicilanIndexedDBRepository extends Dexie implements CicilanReposito
 
     constructor() {
         super('KoperasiDB');
-        this.version(234).stores({
+        this.version(5).stores({
             cicilan: '++id, pinjamanId, tanggalJatuhTempo, jumlahHarusDibayar, kurangBayar, pembayaran, tanggalPembayaranLunas, status',
         });
         this.cicilan = this.table('cicilan');
