@@ -6,7 +6,7 @@ export class PhotoIndexedDBRepository implements PhotoRepository {
 
   constructor() {
     this.db = new Dexie("KoperasiDB");
-    this.db.version(1).stores({
+    this.db.version(23).stores({
       photos: "nasabahId, photo", // nasabahId sebagai primary key
     });
   }

@@ -7,7 +7,7 @@ export class ProdukPinjamanIndexedDBRepository extends Dexie implements ProdukPi
 
     constructor() {
         super('KoperasiDB');
-        this.version(1).stores({
+        this.version(23).stores({
             produkPinjaman: '++id, namaProduk, jarakCicilan, bunga, jenisPeminjam, maksimumPinjaman, minimumPinjaman, keterangan, is_active', // is_active sebagai number
         });
         this.produkPinjaman = this.table('produkPinjaman');
