@@ -1,6 +1,9 @@
 // src/container.ts
 
 // Import repository
+import { NasabahRepository } from './core/repositories/NasabahRepository';
+import { NasabahIndexedDBRepository } from './data/repositories/IndexedDB/NasabahIndexedDBRepository';
+
 import { ProdukPinjamanRepository } from './core/repositories/Mutasi/ProdukPinjamanRepository';
 import { ProdukPinjamanIndexedDBRepository } from './data/repositories/IndexedDB/ProdukPinjamanIndexedDBRepository';
 
@@ -35,7 +38,10 @@ import { CreateCicilanPayment } from './core/usecases/Cicilan/CreateCicilanPayme
 import { UploadPhoto } from './core/usecases/Customer/UploadPhoto';
 import { GetPhotoUrl } from './core/usecases/Customer/GetPhotoUrl';
 
+import { RestoreNasabahFromExcel } from './core/usecases/RestoreFromExcel/RestoreNasabahFromExcel';
+
 // Buat instance repository
+const nasabahRepository: NasabahRepository = new NasabahIndexedDBRepository();
 const produkPinjamanRepository: ProdukPinjamanRepository = new ProdukPinjamanIndexedDBRepository();
 const pinjamanRepository: PinjamanRepository = new PinjamanIndexedDBRepository();
 const transaksiRepository: TransaksiRepository = new TransaksiIndexedDBRepository();
@@ -65,3 +71,10 @@ export const createCicilanPayment = new CreateCicilanPayment(pinjamanRepository,
 
 export const uploadPhoto = new UploadPhoto(customerPhotoRepository);
 export const getPhotoUrl = new GetPhotoUrl(customerPhotoRepository);
+
+export const restoreNasabahFromExcel = new RestoreNasabahFromExcel(nasabahRepository);
+
+// Map use case berdasarkan nama repository untuk fleksibilitas
+export const restoreUseCases: Record<string, { execute: (file: File) => Promise<void> }> = {
+  Nasabah: restoreNasabahFromExcel,
+};

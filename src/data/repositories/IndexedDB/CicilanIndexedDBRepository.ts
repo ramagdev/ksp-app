@@ -15,6 +15,10 @@ export class CicilanIndexedDBRepository extends Dexie implements CicilanReposito
         this.cicilan = this.table('cicilan');
     }
 
+    async getAll(): Promise<Cicilan[]> {
+      return await this.cicilan.toArray();
+    }
+
     async createCicilanBatch(cicilanList: Omit<Cicilan, 'id'>[]): Promise<void> {
         await this.cicilan.bulkAdd(cicilanList as Cicilan[]);
     }

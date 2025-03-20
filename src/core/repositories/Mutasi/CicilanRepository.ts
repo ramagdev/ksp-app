@@ -14,4 +14,5 @@ export interface CicilanRepository {
     checkCicilanExists(cicilanId: number): Promise<void>;
     checkPembayaranExists(cicilanId: number, transaksiId: number): Promise<void>;
     deletePembayaran(cicilanId: number, transaksiId: number): Promise<void>;
+    getAll(): Promise<Cicilan[]>
 }

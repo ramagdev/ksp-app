@@ -8,4 +8,5 @@ export interface PinjamanRepository {
   checkPinjamanExists(pinjamanId: number): Promise<void>;
   getAllPinjamanByNasabahId(nasabahId: number): Promise<Pinjaman[]>;
   deletePinjaman(pinjamanId: number): Promise<void>;
+  getAll(): Promise<Pinjaman[]>;
 }

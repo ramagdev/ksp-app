@@ -6,10 +6,10 @@ import HomePage from "./presentation/pages/HomePage";
 import { TambahNasabahPage } from "./presentation/pages/TambahNasabahPage";
 import { NotFoundPage } from "./presentation/pages/NotFoundPage";
 import { ProfilNasabahPage } from "./presentation/pages/ProfilNasabahPage";
-// import { TambahTransaksiPage } from "./presentation/pages/TambahTransaksiPage";
 import { ProdukPinjamanPage } from "./presentation/pages/ProdukPinjamanPage";
 import { TambahProdukPinjamanPage } from "./presentation/pages/TambahProdukPinjamanPage";
 import { EditProdukPinjamanPage } from "./presentation/pages/EditProdukPinjamanPage";
+import RestoreFromExcelPage from "./presentation/pages/RestoreFromExcelPage";
 import { AppShell } from "./presentation/components/AppShell";
 
 const AnimatedRoute = ({ children, inProp }: { children: React.ReactNode; inProp: boolean }) => {
@@ -66,14 +66,14 @@ const AnimatedRoutes = () => {
             </AnimatedRoute>
           }
         />
-        {/* <Route
-          path="nasabah/:id/tambah-transaksi"
+        <Route 
+          path="/restore" 
           element={
-            <AnimatedRoute inProp={location.pathname.startsWith("/nasabah/") && location.pathname.endsWith("/tambah-transaksi")}>
-              <TambahTransaksiPage />
+            <AnimatedRoute inProp={location.pathname.startsWith("/restore")}>
+              <RestoreFromExcelPage />
             </AnimatedRoute>
-          }
-        /> */}
+          } 
+        />
         <Route
           path="produk-pinjaman"
           element={

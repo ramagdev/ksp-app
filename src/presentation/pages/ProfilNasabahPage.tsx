@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import { Nasabah } from "../../core/entities/Nasabah";
 import { NasabahDetail } from "../../core/entities/NasabahDetail";
-import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexedDB/NasabahRepository";
+import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexedDB/NasabahIndexedDBRepository";
 import { NasabahDetailIndexedDBRepository as NasabahDetailRepository } from "../../data/repositories/IndexedDB/NasabahDetailRepository";
 import { EditNasabahProfile } from "../../core/usecases/EditNasabahProfile";
 import { ProfilNasabah } from "../components/ProfilNasabah";

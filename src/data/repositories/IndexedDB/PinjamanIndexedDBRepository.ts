@@ -22,6 +22,10 @@ export class PinjamanIndexedDBRepository implements PinjamanRepository {
     return await db.pinjaman.add(pinjaman);
   }
 
+  async getAll(): Promise<Pinjaman[]> {
+    return await db.pinjaman.toArray();
+  }
+
   async getPinjamanAktifByNasabahId(nasabahId: number): Promise<Pinjaman[]> {
     return await db.pinjaman
       .where('nasabahId')

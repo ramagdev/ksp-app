@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { BackupMultipleTablesToExcel } from '../../core/usecases/BackupMultipleTablesToExcel';
-import { NasabahIndexedDBRepository } from '../../data/repositories/IndexedDB/NasabahRepository';
+import { NasabahIndexedDBRepository } from '../../data/repositories/IndexedDB/NasabahIndexedDBRepository';
 import { NasabahDetailIndexedDBRepository } from '../../data/repositories/IndexedDB/NasabahDetailRepository';
+import { ProdukPinjamanIndexedDBRepository } from '../../data/repositories/IndexedDB/ProdukPinjamanIndexedDBRepository';
+import { PinjamanIndexedDBRepository } from '../../data/repositories/IndexedDB/PinjamanIndexedDBRepository';
+import { TransaksiIndexedDBRepository } from '../../data/repositories/IndexedDB/TransaksiIndexedDBRepository';
+import { CicilanIndexedDBRepository } from '../../data/repositories/IndexedDB/CicilanIndexedDBRepository';
+import { PhotoIndexedDBRepository } from '../../data/repositories/IndexedDB/PhotoIndexedDBRepository';
 
 const MIN_BACKUP_INTERVAL = 5 * 60 * 1000; // 5 menit dalam milidetik
 const BackupMultipleTablesButton: React.FC<{ isSidebarOpen: boolean; isMenuOpen: boolean }> = ({ isSidebarOpen, isMenuOpen }) => {
@@ -20,6 +25,11 @@ const BackupMultipleTablesButton: React.FC<{ isSidebarOpen: boolean; isMenuOpen:
     const repositories = {
       Nasabah: new NasabahIndexedDBRepository(),
       NasabahDetail: new NasabahDetailIndexedDBRepository(),
+      ProdukPinjaman: new ProdukPinjamanIndexedDBRepository(),
+      Pinjaman: new PinjamanIndexedDBRepository(),
+      Transaksi: new TransaksiIndexedDBRepository(),
+      Cicilan: new CicilanIndexedDBRepository(),
+      Photo: new PhotoIndexedDBRepository(),
     };
 
     const backupUseCase = new BackupMultipleTablesToExcel(repositories);

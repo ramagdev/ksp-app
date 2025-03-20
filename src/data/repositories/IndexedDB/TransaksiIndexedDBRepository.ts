@@ -21,6 +21,10 @@ export class TransaksiIndexedDBRepository implements TransaksiRepository {
   async createTransaksi(transaksi: Omit<Transaksi, 'id'>): Promise<number> {
     return await db.transaksi.add(transaksi);
   }
+  
+  async getAll(): Promise<Transaksi[]> {
+    return await db.transaksi.toArray();
+  }
 
   async getTransaksiByPinjamanId(pinjamanId: number): Promise<Transaksi[]> {
     return await db.transaksi

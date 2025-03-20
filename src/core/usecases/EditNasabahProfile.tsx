@@ -1,4 +1,4 @@
-import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexedDB/NasabahRepository";
+import { NasabahIndexedDBRepository as NasabahRepository } from "../../data/repositories/IndexedDB/NasabahIndexedDBRepository";
 import { NasabahDetailIndexedDBRepository as NasabahDetailRepository } from "../../data/repositories/IndexedDB/NasabahDetailRepository";
 import { NasabahDetail } from "../../core/entities/NasabahDetail";
 

@@ -21,9 +21,7 @@ export const ProfilNasabah: React.FC<ProfilNasabahProps> = ({ nasabah, detail, o
   useEffect(() => {
     const loadPhoto = async () => {
       try {
-        console.log(nasabah.id);
         const url = await getPhotoUrl.execute(nasabah.id!);
-        console.log(url);
 
         setInitialPhotoUrl(url);
       } catch (error) {
@@ -47,7 +45,13 @@ export const ProfilNasabah: React.FC<ProfilNasabahProps> = ({ nasabah, detail, o
     setInitialPhotoUrl(newUrl);
   };
 
-  if (isLoading) return <div>Memuat foto...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
 
   return (
