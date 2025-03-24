@@ -94,7 +94,7 @@ export const TambahNasabahPage = () => {
 
       // Navigasi hanya jika tidak ada error kritis
       if (!uploadError || !selectedPhoto) {
-        navigate("/home");
+        navigate("/app/home");
       }
     } catch (err) {
       setErrors({ general: "Gagal menambahkan nasabah. Silakan coba lagi." });

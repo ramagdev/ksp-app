@@ -9,7 +9,7 @@ export const TambahProdukPinjamanPage: React.FC = () => {
 
   const handleSubmit = async (produk: Omit<ProdukPinjamanEntity, 'id'>) => {
     await createProdukPinjaman.execute(produk); // Tambahkan produk baru
-    navigate('/produk-pinjaman'); // Redirect ke halaman daftar produk
+    navigate('/app/produk-pinjaman'); // Redirect ke halaman daftar produk
   };
 
   return (

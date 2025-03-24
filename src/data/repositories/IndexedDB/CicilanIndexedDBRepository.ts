@@ -67,12 +67,26 @@ export class CicilanIndexedDBRepository extends Dexie implements CicilanReposito
         }
     }
 
+    async getCicilanById(id: number): Promise<Cicilan> {
+        const cicilan = await this.cicilan.get(id);
+        if (!cicilan) {
+            throw new Error('Cicilan not found');
+        }
+        return cicilan;
+    }
+
+    async getAllCicilanByTransaksiId(pinjamanId: number, transaksiId: number): Promise<Cicilan[]> {
+        const cicilanList = await this.cicilan.where('pinjamanId').equals(pinjamanId).toArray();
+        return cicilanList.filter(cicilan => cicilan.pembayaran.some(p => p.transaksiId === transaksiId));
+    }
+
     async deletePembayaran(cicilanId: number, transaksiId: number): Promise<void> {
         const cicilan = await this.cicilan.get(cicilanId);
         if (!cicilan) {
             throw new Error('Cicilan not found');
         }
         const updatedCicilan = {
+            kurangBayar: cicilan.kurangBayar + cicilan.pembayaran.find(p => p.transaksiId === transaksiId)!.jumlah,
             pembayaran:cicilan.pembayaran.filter(p => p.transaksiId !== transaksiId),
             tanggalPembayaranLunas: undefined,
             status: 'Belum Bayar' as 'Belum Bayar'|'Dibayar'|'Terlambat',

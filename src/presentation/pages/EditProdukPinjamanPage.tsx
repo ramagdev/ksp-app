@@ -23,7 +23,7 @@ export const EditProdukPinjamanPage: React.FC = () => {
   const handleSubmit = async (produk: Omit<ProdukPinjamanEntity, 'id'>) => {
     if (id) {
       await updateProdukPinjaman.execute(Number(id), produk); // Update produk
-      navigate('/produk-pinjaman'); // Redirect ke halaman daftar produk
+      navigate('/app/produk-pinjaman'); // Redirect ke halaman daftar produk
     }
   };
 

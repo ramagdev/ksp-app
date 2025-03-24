@@ -69,6 +69,26 @@ button:focus-visible {
 @import "tailwindcss";
 @import './styles/profilnasabah.css';
 
+@font-face {
+  font-family: "Poppins";
+  src: url("./assets/fonts/Poppins-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("./assets/fonts/Poppins-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("./assets/fonts/Poppins-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
 
 /* Reset dan Base Style */
 html {
@@ -222,3 +242,8 @@ h6 {
   animation: flip-in 1.2s ease-in-out;
 }
   
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

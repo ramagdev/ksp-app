@@ -18,11 +18,11 @@ export const ProdukPinjamanPage: React.FC = () => {
   }, [getAllProdukPinjaman]);
 
   const handleTambahProduk = () => {
-    navigate("/produk-pinjaman/tambah"); // Navigasi ke halaman tambah produk
+    navigate("/app/produk-pinjaman/tambah"); // Navigasi ke halaman tambah produk
   };
 
   const handleEditProduk = (id: number) => {
-    navigate(`/produk-pinjaman/edit/${id}`); // Navigasi ke halaman edit produk
+    navigate(`/app/produk-pinjaman/edit/${id}`); // Navigasi ke halaman edit produk
   };
 
   const handleDeleteProduk = async (id: number) => {

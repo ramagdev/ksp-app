@@ -39,6 +39,11 @@ export class GetLoanMutations {
     const jumlahPinjaman = pinjaman.jumlahPinjaman;
     const pinjamanBerbunga = jumlahPinjaman * (1 + produkPinjaman.bunga/100);
 
+    let saldoUtang = 0;
+    for (const cicilan of sortedCicilan) {
+      saldoUtang += cicilan.kurangBayar;
+    }
+
     // Pemisahan transaksi dalam cicilan
     const enrichedCicilan = sortedCicilan.map( (cicilan, index) => {
       const cicilanId = cicilan.id ?? null;
@@ -70,6 +75,7 @@ export class GetLoanMutations {
         tanggalJatuhTempo: cicilan.tanggalJatuhTempo,
         jumlahHarusDibayar: cicilan.jumlahHarusDibayar,
         rows,
+        kurangBayar: cicilan.kurangBayar,
         tanggalPembayaranLunas,
         lcDays,
         statusCicilan
@@ -80,6 +86,7 @@ export class GetLoanMutations {
       pinjamanId: pinjaman.id,
       pinjamanPokok: jumlahPinjaman,
       bunga: produkPinjaman.bunga,
+      saldoUtang,
       pinjamanBerbunga,
       tanggalPinjaman: pinjaman.tanggalPinjaman,
       statusPinjaman: pinjaman.status,

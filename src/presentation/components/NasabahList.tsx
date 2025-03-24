@@ -32,7 +32,7 @@ export default function NasabahList({ nasabahList, isLoading, error }: NasabahLi
   };
 
   const handleRowClick = (nasabahId: number) => {
-    navigate(`/nasabah/${nasabahId}`); // Navigasi ke halaman profil nasabah
+    navigate(`/app/nasabah/${nasabahId}`); // Navigasi ke halaman profil nasabah
   };
 
   if (isLoading) {

@@ -1,8 +1,9 @@
-// AppShell.tsx
 import React, { useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import BackupMultipleTablesButton from "./BackupMultipleTablesButton";
+import { useAuth } from "../../utils/auth";
+import { useNavigate } from "react-router-dom";
 
 interface NavItemProps {
   to: string;
@@ -38,44 +39,48 @@ const NavItem: React.FC<NavItemProps> = ({ to, label, icon, isSidebarOpen, isMen
 );
 
 export const AppShell: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // Dropdown mobile
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar desktop
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { lock } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  const handleLogout = () => {
+    lock();
+    navigate("/");
+  };
+
   const navItems = [
     {
-      to: "/home",
+      to: "/app/home",
       label: "Daftar Nasabah",
       icon: (
         <svg
           className="w-6 h-6"
+          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+          strokeWidth="2" // Diperbaiki dari stroke-width
+          strokeLinecap="round" // Diperbaiki dari stroke-linecap
+          strokeLinejoin="round" // Diperbaiki dari stroke-linejoin
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-          />
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <line x1="9" y1="3" x2="9" y2="21" />
+          <line x1="15" y1="3" x2="15" y2="21" />
+          <line x1="3" y1="9" x2="21" y2="9" />
+          <line x1="3" y1="15" x2="21" y2="15" />
+          <circle cx="6" cy="18" r="2" />
+          <path d="M4 20a2 2 0 0 1 4 0v1H4v-1z" />
         </svg>
       ),
     },
     {
-      to: "/tambah-nasabah",
+      to: "/app/tambah-nasabah",
       label: "Tambah Nasabah",
       icon: (
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -86,16 +91,10 @@ export const AppShell: React.FC = () => {
       ),
     },
     {
-      to: "/produk-pinjaman",
+      to: "/app/produk-pinjaman",
       label: "Kelola Produk Pinjaman",
       icon: (
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -106,16 +105,10 @@ export const AppShell: React.FC = () => {
       ),
     },
     {
-      to: "/restore",
+      to: "/app/restore",
       label: "Restore Data",
       icon: (
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -161,6 +154,22 @@ export const AppShell: React.FC = () => {
             <li>
               <BackupMultipleTablesButton isSidebarOpen={isSidebarOpen} isMenuOpen={isMenuOpen} />
             </li>
+            <li>
+              <button
+                onClick={handleLogout}
+                className="flex items-center p-2 rounded-md hover:bg-gray-700 w-full text-left"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+                {(isSidebarOpen || isMenuOpen) && <span className="ml-3">Logout</span>}
+              </button>
+            </li>
           </ul>
         </nav>
 
@@ -168,7 +177,7 @@ export const AppShell: React.FC = () => {
         <aside
           className={`hidden md:flex ${
             isSidebarOpen ? "md:w-64" : "md:w-16"
-          } bg-gray-800 text-white flex-col min-h-screen transition-all duration-300 ease-in-out`}
+          } bg-gray-800 text-white flex-col min-h-screen transition-all duration-300`}
         >
           <div className="p-4 flex justify-between items-center">
             {isSidebarOpen && (
@@ -205,6 +214,22 @@ export const AppShell: React.FC = () => {
                   isSidebarOpen={isSidebarOpen}
                   isMenuOpen={isMenuOpen}
                 />
+              </li>
+              <li>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center p-2 rounded-md hover:bg-gray-700 w-full text-left"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  {isSidebarOpen && <span className="ml-3">Logout</span>}
+                </button>
               </li>
             </ul>
           </nav>

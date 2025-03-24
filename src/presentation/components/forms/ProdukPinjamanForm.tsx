@@ -45,7 +45,7 @@ interface ProdukPinjamanFormProps {
         };
   
         await onSubmit(produkPinjaman); // Gunakan fungsi onSubmit dari props
-        navigate('/produk-pinjaman');
+        navigate('/app/produk-pinjaman');
       } catch (err) {
         setErrors({ general: "Gagal menyimpan produk pinjaman. Silakan coba lagi." });
       }

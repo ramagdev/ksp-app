@@ -5,6 +5,7 @@ import aktaPendirian from './assets/akta-pendirian.pdf';
 import nibKsp from './assets/nib-ksp.pdf';
 import pengesahan from './assets/pengesahan-kemenkumham.pdf';
 import npwp from './assets/npwp.pdf';
+import LoginForm from './presentation/components/forms/Login';
 
 function App() {
   return (
@@ -25,44 +26,11 @@ function App() {
           className="my-15 h-24 w-24 row-start-1 col-start-3 justify-self-start self-start" 
         />
 
-        {/* Form Login di Tengah */}
+        {/* Form Login */}
         <div className="mb-15 col-span-3 row-start-2 flex items-center justify-center">
           <div className="w-full max-w-md bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200">
             <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Masuk ke Aplikasi</h2>
-            <form className="space-y-6">
-              <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                  Username
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Masukkan username"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Masukkan password"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
-              >
-                Login
-              </button>
-            </form>
+            <LoginForm />
           </div>
         </div>
 

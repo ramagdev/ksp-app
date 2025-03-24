@@ -11,14 +11,25 @@ export class DeleteCicilanPayment {
     ): Promise<void> {
 
         //Validasi input
+
         await this.cicilanRepository.checkCicilanExists(cicilanId);
         await this.cicilanRepository.checkPembayaranExists(cicilanId, transaksiId);
 
-        //Hapus perhitungan lunas
-        
+        //Cari tahu pinjamanId
+        const cicilan = await this.cicilanRepository.getCicilanById(cicilanId);
+        const pinjamanId = cicilan.pinjamanId;
+
+        //Cari list cicilan yang menerima pembayaran
+        const cicilanList = await this.cicilanRepository.getAllCicilanByTransaksiId(pinjamanId, transaksiId);
         
         //Hapus catatan pembayaran
-        await this.cicilanRepository.deletePembayaran(cicilanId, transaksiId);
+        cicilanList.forEach(async (cicilan) => {
+            const cicilanId = cicilan.id;
+            if (!cicilanId) {
+                throw new Error('Cicilan not found');
+            }
+            await this.cicilanRepository.deletePembayaran(cicilanId, transaksiId);  
+        });
     
     }
 }

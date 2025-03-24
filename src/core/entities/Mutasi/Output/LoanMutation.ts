@@ -5,6 +5,7 @@ export default interface LoanMutation {
   pinjamanPokok: number;
   bunga: number;
   pinjamanBerbunga: number;
+  saldoUtang: number;
   tanggalPinjaman: Date;
   statusPinjaman: 'Aktif' | 'Lunas' | 'Macet' | 'Gagal';
   keterangan?: string;
